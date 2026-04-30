@@ -118,6 +118,7 @@
         <div>
           <label>시공공간</label>
           <select id="areasPreset">
+            <option value="">선택하세요</option>
             <option value="거실">거실</option>
             <option value="거실, 복도">거실, 복도</option>
             <option value="거실, 복도, 주방">거실, 복도, 주방</option>
@@ -234,7 +235,6 @@
     const extension = $("extension").value;
     if (pyeongType && extension) return `${pyeongType} (${extension})`;
     if (pyeongType) return pyeongType;
-    if (extension) return `(${extension})`;
     return "";
   }
 
@@ -297,7 +297,7 @@
 
   function collectInput() {
     return {
-      customerName: $("customerName").value.trim() || "고객",
+      customerName: $("customerName").value.trim(),
       phone: $("phone").value.trim() || "카카오톡 채널 문의",
       address: $("address").value.trim(),
       pyeongLine: getPyeongLine(),
@@ -324,12 +324,13 @@
       : "";
 
     const maxDiscount = data.qty1200 * MAX_DISCOUNT_PER_1200;
+    const customerNameLine = data.customerName ? `${data.customerName}님` : "고객님";
 
     return `안녕하세요. 로엔매트입니다.
 문의주신 내용을 기준으로 예상 견적 안내드립니다.
 
 ■ 고객 정보
-▫ 성함 :  ${data.customerName}님
+▫ 성함 :  ${customerNameLine}
 ▫ 연락처 : ${data.phone}
 ▫ 주소지 : ${data.address}
 ▫ 평형타입 : ${data.pyeongLine}
@@ -398,7 +399,7 @@ ${productBlocks}${roomBlocks}
     $("address").value = "";
     $("pyeongType").value = "";
     $("extension").value = "베란다 확장형";
-    $("areasPreset").value = "거실, 복도";
+    $("areasPreset").value = "";
     $("areasCustom").value = "";
     $("qty1200").value = "";
     $("qty600").value = "";
