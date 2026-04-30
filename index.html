@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>로엔매트 견적 템플릿</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", sans-serif; margin: 0; background:#f6f7f9; }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 16px; }
+    .card { background:#fff; border-radius: 14px; padding: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.06); margin-bottom: 12px; }
+    h1 { font-size: 18px; margin: 0 0 10px; }
+    h2 { font-size: 14px; margin: 0 0 8px; color:#333; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 720px){ .grid { grid-template-columns: 1fr; } }
+
+    label { display:block; font-size: 12px; color:#555; margin-bottom: 4px; }
+    input, select, textarea {
+      width: 100%; box-sizing: border-box;
+      padding: 10px; border-radius: 10px;
+      border: 1px solid #d9dde3; background: #fff;
+      font-size: 14px;
+    }
+    textarea { min-height: 420px; resize: vertical; line-height: 1.55; }
+
+    .row { display:flex; gap: 10px; flex-wrap: wrap; align-items:center; }
+    button {
+      border: 0; padding: 10px 14px; border-radius: 12px;
+      background:#111; color:#fff; font-size: 14px; cursor:pointer;
+    }
+    button.secondary { background:#e9ecf1; color:#111; }
+
+    .hint { font-size: 12px; color:#666; margin-top: 6px; }
+    .mini { font-size: 12px; color:#666; }
+    .ok { color: #0a7; font-weight: 600; }
+    .muted { color:#999; }
+
+    .qty-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 720px){ .qty-grid { grid-template-columns: 1fr; } }
+
+    .option-row{
+      display:flex; align-items:center; gap:12px;
+      padding: 10px 12px;
+      border: 1px solid #e6eaf0;
+      border-radius: 12px;
+      background:#fafbfc;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .option-row .check{
+      display:flex; align-items:center; gap:8px;
+      min-width: 120px;
+      font-size: 13px; color:#222;
+      white-space: nowrap;
+    }
+    .option-row .check input{ width:18px; height:18px; }
+    .option-row .field{ flex:1; min-width: 220px; }
+    .option-row .field label{ margin:0 0 4px; font-size:12px; color:#555; }
+    .option-row .field .sub{ font-size:12px; color:#999; margin-top:4px; }
+
+    .action-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+    .action-row button{ min-width: 96px; }
+
+    select { min-height: 40px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="card">
+      <h1>로엔매트 견적 템플릿</h1>
+      <div class="mini muted">
+        고객정보 + 시공공간 선택 + 1200/600 장수 입력 → 카톡용 견적 문구 생성
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>고객 정보</h2>
+      <div class="grid">
+        <div>
+          <label>성함(고객명)</label>
+          <input id="customerName" placeholder="문환철" />
+        </div>
+        <div>
+          <label>연락처</label>
+          <input id="phone" placeholder="카카오톡 채널 문의" />
+        </div>
+        <div>
+          <label>주소지</label>
+          <input id="address" placeholder="양산시 동면 금오15길 9 동원로얄듀크2차 105동 201호" />
+        </div>
+        <div>
+          <label>평형타입</label>
+          <input id="pyeongType" placeholder="25평C타입" />
+        </div>
+        <div>
+          <label>확장여부</label>
+          <select id="extension">
+            <option value="베란다 확장형">베란다 확장형</option>
+            <option value="베란다 비확장형">베란다 비확장형</option>
+            <option value="">표시 안 함</option>
+          </select>
+        </div>
+        <div>
+          <label>시공공간</label>
+          <select id="areasPreset">
+            <option value="거실, 복도">거실, 복도</option>
+            <option value="거실">거실</option>
+            <option value="거실, 복도, 주방">거실, 복도, 주방</option>
+            <option value="거실, 복도, 아일랜드">거실, 복도, 아일랜드</option>
+            <option value="거실, 방">거실, 방</option>
+            <option value="거실, 복도, 방">거실, 복도, 방</option>
+            <option value="직접입력">직접입력</option>
+          </select>
+        </div>
+        <div>
+          <label>시공공간 직접입력</label>
+          <input id="areasCustom" placeholder="예: 거실, 복도, 펜트리" />
+          <div class="hint muted">직접입력 값이 있으면 선택값보다 우선 반영됩니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>장수 입력</h2>
+      <div class="qty-grid">
+        <div>
+          <label>1200 장수</label>
+          <input id="qty1200" type="number" min="0" step="0.5" placeholder="19" />
+          <div class="hint">최대 할인 적용 금액 계산에 반영됩니다.</div>
+        </div>
+
+        <div>
+          <label>600 장수</label>
+          <input id="qty600" type="number" min="0" step="1" placeholder="76" />
+          <div id="hint600" class="hint" style="color:#999;">예상 600장수(1200×4): -</div>
+        </div>
+      </div>
+
+      <div class="option-row">
+        <label class="check">
+          <input id="optRoom" type="checkbox" />
+          방 추가(옵션)
+        </label>
+
+        <div class="field">
+          <label>방 600 장수</label>
+          <input id="qty600Room" type="number" min="0" step="1" placeholder="30" disabled />
+          <div class="sub">체크 시 출력에 방 추가용 600 견적이 추가됩니다.</div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button id="btnGenerate">견적 생성</button>
+        <button class="secondary" id="btnCopy">복사</button>
+        <button class="secondary" id="btnClear">초기화</button>
+        <span id="status" class="mini"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>출력(카톡용)</h2>
+      <textarea id="output" readonly placeholder="견적 생성 버튼을 누르면 여기에 문구가 생성됩니다."></textarea>
+    </div>
+
+  </div>
+
+<script>
+  const PRODUCTS = [
+    { title: "베이직 600", size: "60cm x 60cm x 2.2cm", qtyKey: "qty600", unitPrice: 24000 },
+    { title: "스킨터치 600", size: "60cm x 60cm x 2.2cm", qtyKey: "qty600", unitPrice: 27000 },
+    { title: "베이직 1200", size: "120cm x 120cm x 2.4cm", qtyKey: "qty1200", unitPrice: 159000 },
+    { title: "스킨터치 1200", size: "120cm x 120cm x 2.4cm", qtyKey: "qty1200", unitPrice: 169000 },
+  ];
+
+  const ROOM_PRODUCTS = PRODUCTS.filter((product) => product.qtyKey === "qty600");
+  const MAX_DISCOUNT_PER_1200 = 44000;
+
+  const $ = (id) => document.getElementById(id);
+
+  function formatWon(n) {
+    const v = Number(n);
+    if (!isFinite(v)) return "0원";
+    return Math.round(v).toLocaleString("ko-KR") + "원";
+  }
+
+  function formatQty(qty) {
+    const v = Number(qty);
+    if (!isFinite(v)) return "0장";
+    const s = (Math.round(v * 10) % 10 === 0) ? String(Math.round(v)) : String(v);
+    return `${s}장`;
+  }
+
+  function safeNum(v) {
+    const n = Number(v);
+    return (isFinite(n) && n > 0) ? n : 0;
+  }
+
+  function setStatus(msg, good) {
+    const el = $("status");
+    el.textContent = msg;
+    el.className = "mini " + (good ? "ok" : "");
+    setTimeout(() => { if (el.textContent === msg) el.textContent = ""; }, 2500);
+  }
+
+  function getAreas() {
+    const custom = $("areasCustom").value.trim();
+    const preset = $("areasPreset").value;
+    if (custom) return custom;
+    if (preset === "직접입력") return "";
+    return preset;
+  }
+
+  function getPyeongLine() {
+    const pyeongType = $("pyeongType").value.trim();
+    const extension = $("extension").value;
+    if (pyeongType && extension) return `${pyeongType} (${extension})`;
+    if (pyeongType) return pyeongType;
+    if (extension) return `(${extension})`;
+    return "";
+  }
+
+  function productBlock(product, qty) {
+    return `[ ${product.title} ]
+▫ 사이즈 : ${product.size}
+▫ 예상 수량 : ${formatQty(qty)}
+▫ 예상 금액 : ${formatWon(qty * product.unitPrice)}
+▫ 행사 기준 : 장당 ${formatWon(product.unitPrice)}`;
+  }
+
+  function collectInput() {
+    return {
+      customerName: $("customerName").value.trim() || "고객",
+      phone: $("phone").value.trim() || "카카오톡 채널 문의",
+      address: $("address").value.trim(),
+      pyeongLine: getPyeongLine(),
+      areas: getAreas(),
+      qty1200: safeNum($("qty1200").value),
+      qty600: safeNum($("qty600").value),
+      optRoom: $("optRoom").checked,
+      qty600Room: safeNum($("qty600Room").value),
+    };
+  }
+
+  function buildEstimate(data) {
+    const qtyByKey = {
+      qty600: data.qty600,
+      qty1200: data.qty1200,
+    };
+
+    const productBlocks = PRODUCTS
+      .map((product) => productBlock(product, qtyByKey[product.qtyKey]))
+      .join("\n\n");
+
+    const roomBlocks = (data.optRoom && data.qty600Room > 0)
+      ? `\n\n■ 방 추가 견적\n\n${ROOM_PRODUCTS.map((product) => productBlock(product, data.qty600Room)).join("\n\n")}`
+      : "";
+
+    const maxDiscount = data.qty1200 * MAX_DISCOUNT_PER_1200;
+
+    return `안녕하세요. 로엔매트입니다.
+문의주신 내용을 기준으로 예상 견적 안내드립니다.
+
+■ 고객 정보
+▫ 성함 :  ${data.customerName}님
+▫ 연락처 : ${data.phone}
+▫ 주소지 : ${data.address}
+▫ 평형타입 : ${data.pyeongLine}
+▫ 시공공간 : ${data.areas}
+
+━━━━━━━━━━
+
+■ 제품 구성
+
+${productBlocks}${roomBlocks}
+
+■ 최대 할인 적용 금액
+▫ 1200 사이즈 기준 : ${formatWon(maxDiscount)}
+▫ 산출 기준 : ${formatQty(data.qty1200)} × ${formatWon(MAX_DISCOUNT_PER_1200)}
+
+━━━━━━━━━━
+
+■ 라인 안내
+▫ 베이직 라인
+뮤트화이트 / 뉴트럴 베이지 / 모던 그레이
+
+▫ 시그니처 라인
+스킨터치 단일 컬러
+
+━━━━━━━━━━
+
+■ 안내사항
+✔ 예상 수량은 다수의 시공 데이터 및 온라인 도면 기준으로 산출된 수량이며, 실제 시공 시 현장 구조에 따라 다소 차이가 있을 수 있습니다.
+✔ 결제는 실제 시공 후 사용된 수량 기준으로 진행됩니다.
+✔ 스케줄 배정 후 시공 당일 결제가 진행됩니다.
+✔ 펜트리 공간이 있으신 경우 미리 말씀 주시면 펜트리 전용 매트도 함께 준비해 방문드립니다.
+✔ 해당 견적은 계좌이체 기준이며, 현금영수증 및 세금계산서 발행 가능합니다.
+✔ 카드결제(할부 가능) 시에는 수수료 10%가 별도 발생합니다.
+✔ 프로모션 혜택은 시공일이 아닌 예약일 기준으로 적용됩니다.
+
+궁금하신 점 있으시면 편하게 말씀 주세요.
+고객님 공간에 맞춰 자세히 안내드리겠습니다.`;
+  }
+
+  function generate() {
+    const data = collectInput();
+    $("output").value = buildEstimate(data);
+    update600Hint();
+    setStatus("생성 완료", true);
+  }
+
+  async function copyOutput() {
+    const text = $("output").value.trim();
+    if (!text) { setStatus("복사할 내용이 없어요", false); return; }
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setStatus("복사 완료", true);
+    } catch (e) {
+      $("output").focus();
+      $("output").select();
+      const ok = document.execCommand("copy");
+      setStatus(ok ? "복사 완료" : "복사 실패", ok);
+      window.getSelection?.().removeAllRanges?.();
+    }
+  }
+
+  function clearAll() {
+    $("customerName").value = "";
+    $("phone").value = "";
+    $("address").value = "";
+    $("pyeongType").value = "";
+    $("extension").value = "베란다 확장형";
+    $("areasPreset").value = "거실, 복도";
+    $("areasCustom").value = "";
+    $("qty1200").value = "";
+    $("qty600").value = "";
+    $("optRoom").checked = false;
+    $("qty600Room").value = "";
+    $("qty600Room").disabled = true;
+    $("output").value = "";
+    update600Hint();
+    setStatus("초기화 완료", true);
+  }
+
+  function update600Hint() {
+    const qty1200 = Number($("qty1200").value);
+    const hint = $("hint600");
+    if (isFinite(qty1200) && qty1200 > 0) hint.textContent = `예상 600장수(1200×4): ${qty1200 * 4}장`;
+    else hint.textContent = "예상 600장수(1200×4): -";
+  }
+
+  $("btnGenerate").addEventListener("click", generate);
+  $("btnCopy").addEventListener("click", copyOutput);
+  $("btnClear").addEventListener("click", clearAll);
+
+  $("optRoom").addEventListener("change", () => {
+    const on = $("optRoom").checked;
+    $("qty600Room").disabled = !on;
+    if (!on) $("qty600Room").value = "";
+    generate();
+  });
+
+  ["customerName", "phone", "address", "pyeongType", "extension", "areasPreset", "areasCustom", "qty1200", "qty600", "qty600Room"].forEach((id) => {
+    $(id).addEventListener("input", generate);
+    $(id).addEventListener("change", generate);
+  });
+
+  update600Hint();
+  generate();
+</script>
+</body>
+</html>
