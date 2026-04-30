@@ -57,6 +57,21 @@
     .option-row .field label{ margin:0 0 4px; font-size:12px; color:#555; }
     .option-row .field .sub{ font-size:12px; color:#999; margin-top:4px; }
 
+    .room-tools { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px; }
+    .room-list { display:grid; gap:8px; }
+    .room-item {
+      display:grid;
+      grid-template-columns: minmax(120px, 1fr) minmax(110px, 1fr) auto;
+      gap:8px;
+      align-items:end;
+      padding:10px;
+      border:1px solid #e6eaf0;
+      border-radius:12px;
+      background:#fff;
+    }
+    .room-item button { min-width:64px; padding:10px 12px; }
+    @media (max-width: 720px){ .room-item { grid-template-columns: 1fr; } }
+
     .action-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
     .action-row button{ min-width: 96px; }
 
@@ -143,9 +158,11 @@
         </label>
 
         <div class="field">
-          <label>방 600 장수</label>
-          <input id="qty600Room" type="number" min="0" step="1" placeholder="30" disabled />
-          <div class="sub">체크 시 출력에 방 추가용 600 견적이 추가됩니다.</div>
+          <div class="room-tools">
+            <button class="secondary" id="btnAddRoom" type="button" disabled>방 추가</button>
+            <div class="sub">체크 시 방 이름과 600 장수를 여러 개 추가할 수 있습니다.</div>
+          </div>
+          <div id="roomList" class="room-list"></div>
         </div>
       </div>
 
@@ -227,6 +244,55 @@
 ▫ 행사 기준 : 장당 ${formatWon(product.unitPrice)}`;
   }
 
+  function roomProductBlock(product, room) {
+    return `[ ${room.name} - ${product.title} ]
+▫ 사이즈 : ${product.size}
+▫ 예상 수량 : ${formatQty(room.qty)}
+▫ 예상 금액 : ${formatWon(room.qty * product.unitPrice)}
+▫ 행사 기준 : 장당 ${formatWon(product.unitPrice)}`;
+  }
+
+  function getRooms() {
+    return Array.from(document.querySelectorAll(".room-item")).map((item, index) => {
+      const name = item.querySelector(".room-name").value.trim() || `방 ${index + 1}`;
+      const qty = safeNum(item.querySelector(".room-qty").value);
+      return { name, qty };
+    }).filter((room) => room.qty > 0);
+  }
+
+  function addRoom(name = "", qty = "") {
+    const roomList = $("roomList");
+    const roomNo = roomList.children.length + 1;
+    const item = document.createElement("div");
+    item.className = "room-item";
+    item.innerHTML = `
+      <div>
+        <label>방 이름</label>
+        <input class="room-name" placeholder="방 ${roomNo}" value="${name}" />
+      </div>
+      <div>
+        <label>방 600 장수</label>
+        <input class="room-qty" type="number" min="0" step="1" placeholder="30" value="${qty}" />
+      </div>
+      <button class="secondary room-delete" type="button">삭제</button>
+    `;
+
+    item.querySelector(".room-name").addEventListener("input", generate);
+    item.querySelector(".room-qty").addEventListener("input", generate);
+    item.querySelector(".room-delete").addEventListener("click", () => {
+      item.remove();
+      generate();
+    });
+
+    roomList.appendChild(item);
+  }
+
+  function setRoomOption(on) {
+    $("btnAddRoom").disabled = !on;
+    if (on && $("roomList").children.length === 0) addRoom();
+    if (!on) $("roomList").innerHTML = "";
+  }
+
   function collectInput() {
     return {
       customerName: $("customerName").value.trim() || "고객",
@@ -237,7 +303,7 @@
       qty1200: safeNum($("qty1200").value),
       qty600: safeNum($("qty600").value),
       optRoom: $("optRoom").checked,
-      qty600Room: safeNum($("qty600Room").value),
+      rooms: $("optRoom").checked ? getRooms() : [],
     };
   }
 
@@ -251,8 +317,8 @@
       .map((product) => productBlock(product, qtyByKey[product.qtyKey]))
       .join("\n\n");
 
-    const roomBlocks = (data.optRoom && data.qty600Room > 0)
-      ? `\n\n■ 방 추가 견적\n\n${ROOM_PRODUCTS.map((product) => productBlock(product, data.qty600Room)).join("\n\n")}`
+    const roomBlocks = (data.optRoom && data.rooms.length > 0)
+      ? `\n\n■ 방 추가 견적\n\n${data.rooms.map((room) => ROOM_PRODUCTS.map((product) => roomProductBlock(product, room)).join("\n\n")).join("\n\n")}`
       : "";
 
     const maxDiscount = data.qty1200 * MAX_DISCOUNT_PER_1200;
@@ -335,8 +401,7 @@ ${productBlocks}${roomBlocks}
     $("qty1200").value = "";
     $("qty600").value = "";
     $("optRoom").checked = false;
-    $("qty600Room").value = "";
-    $("qty600Room").disabled = true;
+    setRoomOption(false);
     $("output").value = "";
     update600Hint();
     setStatus("초기화 완료", true);
@@ -352,15 +417,18 @@ ${productBlocks}${roomBlocks}
   $("btnGenerate").addEventListener("click", generate);
   $("btnCopy").addEventListener("click", copyOutput);
   $("btnClear").addEventListener("click", clearAll);
-
-  $("optRoom").addEventListener("change", () => {
-    const on = $("optRoom").checked;
-    $("qty600Room").disabled = !on;
-    if (!on) $("qty600Room").value = "";
+  $("btnAddRoom").addEventListener("click", () => {
+    addRoom();
     generate();
   });
 
-  ["customerName", "phone", "address", "pyeongType", "extension", "areasPreset", "areasCustom", "qty1200", "qty600", "qty600Room"].forEach((id) => {
+  $("optRoom").addEventListener("change", () => {
+    const on = $("optRoom").checked;
+    setRoomOption(on);
+    generate();
+  });
+
+  ["customerName", "phone", "address", "pyeongType", "extension", "areasPreset", "areasCustom", "qty1200", "qty600"].forEach((id) => {
     $(id).addEventListener("input", generate);
     $(id).addEventListener("change", generate);
   });
