@@ -186,14 +186,14 @@
 
 <script>
   const PRODUCTS = [
-    { title: "베이직 600", size: "60cm x 60cm x 2.2cm", qtyKey: "qty600", unitPrice: 22000 },
-    { title: "스킨터치 600", size: "60cm x 60cm x 2.2cm", qtyKey: "qty600", unitPrice: 25000 },
-    { title: "베이직 1200", size: "120cm x 120cm x 2.4cm", qtyKey: "qty1200", unitPrice: 109000 },
-    { title: "스킨터치 1200", size: "120cm x 120cm x 2.4cm", qtyKey: "qty1200", unitPrice: 119000 },
+    { title: "베이직 600", size: "60cm x 60cm x 2.2cm", qtyKey: "qty600", unitPrice: 24000 },
+    { title: "스킨터치 600", size: "60cm x 60cm x 2.2cm", qtyKey: "qty600", unitPrice: 27000 },
+    { title: "베이직 1200", size: "120cm x 120cm x 2.4cm", qtyKey: "qty1200", unitPrice: 159000 },
+    { title: "스킨터치 1200", size: "120cm x 120cm x 2.4cm", qtyKey: "qty1200", unitPrice: 169000 },
   ];
 
   const ROOM_PRODUCTS = PRODUCTS.filter((product) => product.qtyKey === "qty600");
-  const COUPON_DISCOUNT_PER_1200 = 14000;
+  const COUPON_DISCOUNT_PER_1200 = 44000;
 
   const $ = (id) => document.getElementById(id);
 
@@ -247,7 +247,7 @@
 
     return `[ ${product.title} ]
 ▫ 사이즈 : ${product.size}
-▫ 장당 가격 : ${formatWon(product.unitPrice)}
+▫ 행사 기준 : 장당 ${formatWon(product.unitPrice)}
 ▫ 예상 수량 : ${formatQty(qty)}
 ▫ 총 금액 : ${formatWon(total)}${couponLine}`;
   }
@@ -256,7 +256,7 @@
     const total = room.qty * product.unitPrice;
     return `[ ${room.name} - ${product.title} ]
 ▫ 사이즈 : ${product.size}
-▫ 장당 가격 : ${formatWon(product.unitPrice)}
+▫ 행사 기준 : 장당 ${formatWon(product.unitPrice)}
 ▫ 예상 수량 : ${formatQty(room.qty)}
 ▫ 총 금액 : ${formatWon(total)}`;
   }
