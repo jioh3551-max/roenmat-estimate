@@ -28,6 +28,8 @@
       background:#111; color:#fff; font-size: 14px; cursor:pointer;
     }
     button.secondary { background:#e9ecf1; color:#111; }
+    button.mode-btn { background:#e9ecf1; color:#111; }
+    button.mode-btn.active { background:#111; color:#fff; }
 
     .hint { font-size: 12px; color:#666; margin-top: 6px; }
     .mini { font-size: 12px; color:#666; }
@@ -83,6 +85,11 @@
 
     <div class="card">
       <h1>로엔매트 견적 템플릿</h1>
+      <div class="row" style="margin-top:10px;">
+        <button id="btnModeNormal" class="mode-btn active" type="button">일반</button>
+        <button id="btnModeGroup" class="mode-btn" type="button">공동구매</button>
+        <span class="mini">현재 선택: <b id="modeLabel">일반</b></span>
+      </div>
       <div class="mini muted">
         고객정보 + 시공공간 선택 + 1200/600 장수 입력 → 카톡용 견적 문구 생성
       </div>
@@ -192,8 +199,16 @@
     { title: "스킨터치 1200", size: "120cm x 120cm x 2.4cm", qtyKey: "qty1200", unitPrice: 169000 },
   ];
 
+  const GROUP_PRODUCTS = [
+    { title: "베이직 600", size: "60cm x 60cm x 2.2cm", qtyKey: "qty600", unitPrice: 24000, priceLabel: "행사 기준" },
+    { title: "스킨터치 600", size: "60cm x 60cm x 2.2cm", qtyKey: "qty600", unitPrice: 27000, priceLabel: "행사 기준" },
+    { title: "베이직 1200", size: "120cm x 120cm x 2.4cm", qtyKey: "qty1200", unitPrice: 99000, priceLabel: "공동구매 특가" },
+    { title: "스킨터치 1200", size: "120cm x 120cm x 2.4cm", qtyKey: "qty1200", unitPrice: 109000, priceLabel: "공동구매 특가" },
+  ];
+
   const ROOM_PRODUCTS = PRODUCTS.filter((product) => product.qtyKey === "qty600");
   const COUPON_DISCOUNT_PER_1200 = 44000;
+  let estimateMode = "normal";
 
   const $ = (id) => document.getElementById(id);
 
@@ -250,6 +265,15 @@
 ▫ 행사 기준 : 장당 ${formatWon(product.unitPrice)}
 ▫ 예상 수량 : ${formatQty(qty)}
 ▫ 총 금액 : ${formatWon(total)}${couponLine}`;
+  }
+
+  function groupProductBlock(product, qty) {
+    const total = qty * product.unitPrice;
+    return `[ ${product.title} ]
+▫ 사이즈 : ${product.size}
+▫ ${product.priceLabel} : 장당 ${formatWon(product.unitPrice)}
+▫ 예상 수량 : ${formatQty(qty)}
+▫ 총 금액 : ${formatWon(total)}`;
   }
 
   function roomProductBlock(product, room) {
@@ -322,6 +346,8 @@
       qty1200: data.qty1200,
     };
 
+    if (estimateMode === "group") return buildGroupEstimate(data, qtyByKey);
+
     const productBlocks = PRODUCTS
       .map((product) => productBlock(product, qtyByKey[product.qtyKey]))
       .join("\n\n");
@@ -380,6 +406,80 @@ ${productBlocks}${roomBlocks}
 고객님 공간에 맞춰 자세히 안내드리겠습니다.`;
   }
 
+  function buildGroupEstimate(data, qtyByKey) {
+    const productBlocks = GROUP_PRODUCTS
+      .map((product) => groupProductBlock(product, qtyByKey[product.qtyKey]))
+      .join("\n\n");
+    const roomBlocks = (data.optRoom && data.rooms.length > 0)
+      ? `\n\n■ 방 추가 견적\n\n${data.rooms.map((room) => ROOM_PRODUCTS.map((product) => roomProductBlock(product, room)).join("\n\n")).join("\n\n")}`
+      : "";
+    const customerNameLine = data.customerName ? `${data.customerName} 님` : "고객님";
+
+    return `안녕하세요 로엔매트입니다.
+문의주신 내용을 기준으로 예상 견적 안내드립니다.
+
+■ 고객 정보
+▫ 성함 : ${customerNameLine}
+▫ 연락처 : ${data.phone}
+▫ 주소지 : ${data.address}
+▫ 평형타입 : ${data.pyeongLine}
+▫ 시공공간 : ${data.areas}
+▫ 시공방식 : 본사 전문 시공팀 무료 시공
+
+━━━━━━━━━━
+
+■ 제품 구성
+
+${productBlocks}${roomBlocks}
+
+━━━━━━━━━━
+
+■ 컬러 안내
+▫ 베이직 라인 : 뮤트화이트 / 뉴트럴 베이지 / 모던 그레이
+▫ 스킨터치 라인 : 스킨터치 단일 컬러
+
+━━━━━━━━━━
+
+■ 공동구매 특가 안내
+▫ 1200사이즈 베이직 : 장당 99,000원
+▫ 1200사이즈 스킨터치 : 장당 109,000원
+
+※ 해당 금액은 공동구매 특가 기준입니다.
+※ 공동구매 특가는 이미 최대 할인 적용 금액으로, 다른 이벤트 할인 / 리뷰이벤트 / 쿠폰 할인 등은 중복 적용이 어렵습니다.
+※ 1200사이즈 기준 적용 혜택이며, 600사이즈는 기존 행사 기준으로 안내됩니다.
+
+━━━━━━━━━━
+
+■ 안내사항
+
+✔ 예상 수량은 다수의 시공 데이터 및 온라인 도면 기준으로 산출된 수량이며, 실제 시공 시 현장 구조에 따라 다소 차이가 있을 수 있습니다.
+
+✔ 결제는 실제 시공 후 사용된 수량 기준으로 진행됩니다.
+
+✔ 계약금은 없으며, 스케줄 배정 후 시공 당일 결제가 진행됩니다.
+
+✔ 펜트리 공간이 있으신 경우 미리 말씀 주시면 펜트리 전용 매트도 함께 준비해 방문드립니다.
+
+✔ 해당 견적은 계좌이체 기준이며, 현금영수증 및 세금계산서 발행 가능합니다.
+
+✔ 카드결제 및 세금계산서 발행 시 VAT는 별도 안내드립니다.
+
+✔ 프로모션 혜택은 시공일이 아닌 예약일 기준으로 적용됩니다.
+
+✔ 전문 시공 서비스 및 출장비는 전액 무료입니다.
+
+궁금하신 점 있으시면 편하게 말씀 주세요.
+고객님 공간에 맞춰 자세히 안내드리겠습니다.`;
+  }
+
+  function setEstimateMode(mode) {
+    estimateMode = mode;
+    $("btnModeNormal").classList.toggle("active", mode === "normal");
+    $("btnModeGroup").classList.toggle("active", mode === "group");
+    $("modeLabel").textContent = mode === "group" ? "공동구매" : "일반";
+    generate();
+  }
+
   function generate() {
     const data = collectInput();
     $("output").value = buildEstimate(data);
@@ -430,6 +530,8 @@ ${productBlocks}${roomBlocks}
   $("btnGenerate").addEventListener("click", generate);
   $("btnCopy").addEventListener("click", copyOutput);
   $("btnClear").addEventListener("click", clearAll);
+  $("btnModeNormal").addEventListener("click", () => setEstimateMode("normal"));
+  $("btnModeGroup").addEventListener("click", () => setEstimateMode("group"));
   $("btnAddRoom").addEventListener("click", () => {
     addRoom();
     generate();
