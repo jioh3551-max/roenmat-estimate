@@ -263,6 +263,12 @@
       : "✔ 전문 시공 서비스 및 출장비는 전액 무료입니다.";
   }
 
+  function getInstallMethod(areas) {
+    return (areas || "").trim() === "거실"
+      ? "본사 전문 시공팀 시공"
+      : "본사 전문 시공팀 무료 시공";
+  }
+
   function productBlock(product, qty) {
     const total = qty * product.unitPrice;
     const couponTotal = total - (product.qtyKey === "qty1200" ? qty * COUPON_DISCOUNT_PER_1200 : 0);
@@ -367,6 +373,7 @@
       : "";
 
     const customerNameLine = data.customerName ? `${data.customerName} 님` : "고객님";
+    const installMethod = getInstallMethod(data.areas);
     const serviceFeeNotice = getServiceFeeNotice(data.areas);
 
     return `안녕하세요 로엔매트입니다.
@@ -378,7 +385,7 @@
 ▫ 주소지 : ${data.address}
 ▫ 평형타입 : ${data.pyeongLine}
 ▫ 시공공간 : ${data.areas}
-▫ 시공방식 : 본사 전문 시공팀 무료 시공
+▫ 시공방식 : ${installMethod}
 
 ━━━━━━━━━━
 
@@ -425,6 +432,7 @@ ${serviceFeeNotice}
       ? `\n\n■ 방 추가 견적\n\n${data.rooms.map((room) => ROOM_PRODUCTS.map((product) => roomProductBlock(product, room)).join("\n\n")).join("\n\n")}`
       : "";
     const customerNameLine = data.customerName ? `${data.customerName} 님` : "고객님";
+    const installMethod = getInstallMethod(data.areas);
     const serviceFeeNotice = getServiceFeeNotice(data.areas);
 
     return `안녕하세요 로엔매트입니다.
@@ -436,7 +444,7 @@ ${serviceFeeNotice}
 ▫ 주소지 : ${data.address}
 ▫ 평형타입 : ${data.pyeongLine}
 ▫ 시공공간 : ${data.areas}
-▫ 시공방식 : 본사 전문 시공팀 무료 시공
+▫ 시공방식 : ${installMethod}
 
 ━━━━━━━━━━
 
