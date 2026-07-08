@@ -1313,19 +1313,19 @@
         <div class="grid">
           <div class="field">
             <label for="customerName">성함</label>
-            <input id="customerName" value="박재준" />
+            <input id="customerName" value="" />
           </div>
           <div class="field">
             <label for="phone">연락처</label>
-            <input id="phone" value="010-5373-0509" />
+            <input id="phone" value="" />
           </div>
           <div class="field full">
             <label for="address">주소지</label>
-            <input id="address" value="충청북도 청주시 서원구 매봉로 131 (모충동, 한화포레나 청주매봉)" />
+            <input id="address" value="" />
           </div>
           <div class="field">
             <label for="pyeongType">평형타입</label>
-            <input id="pyeongType" value="34평A" />
+            <input id="pyeongType" value="" />
           </div>
           <div class="field">
             <label for="quoteDate">견적일</label>
@@ -1345,7 +1345,7 @@
               <option value="">선택하세요</option>
               <option value="거실">거실</option>
               <option value="거실, 복도">거실, 복도</option>
-              <option value="거실, 복도, 주방" selected>거실, 복도, 주방</option>
+              <option value="거실, 복도, 주방">거실, 복도, 주방</option>
               <option value="거실, 복도, 아일랜드">거실, 복도, 아일랜드</option>
               <option value="거실, 방">거실, 방</option>
               <option value="거실, 복도, 방">거실, 복도, 방</option>
@@ -1366,12 +1366,12 @@
         <div class="grid">
           <div class="field">
             <label for="qty1200">1200 장수</label>
-            <input id="qty1200" type="number" min="0" step="0.5" value="27" />
+            <input id="qty1200" type="number" min="0" step="0.5" value="" />
             <p id="normalCouponHint" class="hint">일반 모드는 1200 쿠폰 할인 장당 44,000원을 함께 표시합니다.</p>
           </div>
           <div class="field">
             <label for="qty600">600 장수</label>
-            <input id="qty600" type="number" min="0" step="1" value="108" />
+            <input id="qty600" type="number" min="0" step="1" value="" />
             <p id="hint600" class="hint">예상 600장수(1200×4): -</p>
           </div>
         </div>
@@ -2026,7 +2026,11 @@ ${modeGuide}
     $("btnModeNormal").addEventListener("click", () => setMode("normal"));
     $("btnModeGroup").addEventListener("click", () => setMode("group"));
     $("optRoom").addEventListener("change", () => {
-      updateRoomState();
+      if ($("optRoom").checked && $("roomList").children.length === 0) {
+        addRoom();
+      } else {
+        updateRoomState();
+      }
       renderAll();
     });
     $("btnAddRoom").addEventListener("click", () => {
