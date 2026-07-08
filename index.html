@@ -2,440 +2,1778 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>로엔매트 견적 템플릿</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>로엔매트 견적서 템플릿</title>
   <style>
+    :root {
+      --ink: #111827;
+      --text: #334155;
+      --muted: #8da0b4;
+      --line: #e5ebf2;
+      --soft: #f8fafc;
+      --brand: #4f46e5;
+      --brand-soft: #eef2ff;
+      --panel: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", sans-serif;
       margin: 0;
-      background:#eaf8f1;
+      background: #edf4f7;
+      color: var(--text);
+      font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
     }
-    .wrap { max-width: 920px; margin: 0 auto; padding: 16px; }
-    .card { background:#fff; border-radius: 14px; padding: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.06); margin-bottom: 12px; }
-    h1 { font-size: 18px; margin: 0 0 10px; }
-    h2 { font-size: 14px; margin: 0 0 8px; color:#333; }
-    .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    @media (max-width: 720px){ .grid { grid-template-columns: 1fr; } }
 
-    label { display:block; font-size: 12px; color:#555; margin-bottom: 4px; }
-    input, select, textarea {
-      width: 100%; box-sizing: border-box;
-      padding: 10px; border-radius: 10px;
-      border: 1px solid #d9dde3; background: #fff;
+    .app {
+      display: grid;
+      grid-template-columns: 380px minmax(0, 1fr);
+      gap: 22px;
+      max-width: 1420px;
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    .editor, .quote {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 14px 36px rgba(15, 23, 42, .07);
+    }
+
+    .editor {
+      position: sticky;
+      top: 22px;
+      align-self: start;
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    h1, h2, p { margin: 0; }
+
+    .editor h1 {
+      color: var(--ink);
+      font-size: 21px;
+      margin-bottom: 6px;
+    }
+
+    .desc {
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .edit-section {
+      border-top: 1px solid var(--line);
+      margin-top: 15px;
+      padding-top: 15px;
+    }
+
+    .edit-section h2 {
+      color: var(--ink);
       font-size: 14px;
+      margin-bottom: 10px;
     }
-    textarea { min-height: 420px; resize: vertical; line-height: 1.55; }
 
-    .row { display:flex; gap: 10px; flex-wrap: wrap; align-items:center; }
-    button {
-      border: 0; padding: 10px 14px; border-radius: 12px;
-      background:#111; color:#fff; font-size: 14px; cursor:pointer;
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
-    button.secondary { background:#e9ecf1; color:#111; }
-    button.mode-btn { background:#e9ecf1; color:#111; }
-    button.mode-btn.active { background:#111; color:#fff; }
 
-    .hint { font-size: 12px; color:#666; margin-top: 6px; }
-    .mini { font-size: 12px; color:#666; }
-    .ok { color: #0a7; font-weight: 600; }
-    .muted { color:#999; }
+    .field.full { grid-column: 1 / -1; }
 
-    .qty-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 720px){ .qty-grid { grid-template-columns: 1fr; } }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #73869c;
+      font-size: 12px;
+      font-weight: 800;
+    }
 
-    .option-row{
-      display:flex; align-items:center; gap:12px;
-      padding: 10px 12px;
-      border: 1px solid #e6eaf0;
-      border-radius: 12px;
-      background:#fafbfc;
-      margin-top: 10px;
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #d7e0ea;
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-size: 14px;
+      padding: 9px 10px;
+    }
+
+    textarea {
+      min-height: 180px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .mode-btn {
+      background: #e7eef6;
+      color: var(--ink);
+    }
+
+    .mode-btn.active {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .room-item {
+      display: grid;
+      grid-template-columns: 1fr 90px auto;
+      gap: 8px;
+      align-items: end;
+      margin-top: 8px;
+    }
+
+    .room-item button {
+      padding: 9px 10px;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #fbfdff;
       flex-wrap: wrap;
     }
-    .option-row .check{
-      display:flex; align-items:center; gap:8px;
-      min-width: 120px;
-      font-size: 13px; color:#222;
+
+    .check-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 900;
       white-space: nowrap;
     }
-    .option-row .check input{ width:18px; height:18px; }
-    .option-row .field{ flex:1; min-width: 220px; }
-    .option-row .field label{ margin:0 0 4px; font-size:12px; color:#555; }
-    .option-row .field .sub{ font-size:12px; color:#999; margin-top:4px; }
 
-    .room-tools { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px; }
-    .room-list { display:grid; gap:8px; }
-    .room-item {
-      display:grid;
-      grid-template-columns: minmax(120px, 1fr) minmax(110px, 1fr) auto;
-      gap:8px;
-      align-items:end;
-      padding:10px;
-      border:1px solid #e6eaf0;
-      border-radius:12px;
-      background:#fff;
+    .check-label input {
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      accent-color: var(--ink);
     }
-    .room-item button { min-width:64px; padding:10px 12px; }
-    @media (max-width: 720px){ .room-item { grid-template-columns: 1fr; } }
 
-    .action-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
-    .action-row button{ min-width: 96px; }
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+    }
 
-    select { min-height: 40px; }
+    .hint {
+      color: #7d8fa3;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 6px;
+      background: var(--ink);
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 900;
+      padding: 10px 13px;
+    }
+
+    button.secondary {
+      background: #e7eef6;
+      color: var(--ink);
+    }
+
+    .status {
+      min-height: 18px;
+      margin-top: 10px;
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    .quote {
+      width: min(100%, 920px);
+      min-height: 1280px;
+      margin: 0 auto;
+      border-radius: 0;
+      overflow: hidden;
+    }
+
+    .quote-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 52px 62px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .quote-title {
+      color: var(--ink);
+      font-size: 38px;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    .logo-box {
+      min-width: 142px;
+      border: 1px solid #222;
+      color: #444;
+      padding: 8px 16px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: 950;
+      letter-spacing: 8px;
+      line-height: 1;
+    }
+
+    .quote-section {
+      padding: 38px 62px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-label {
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .customer-name {
+      margin-bottom: 22px;
+      color: var(--ink);
+      font-size: 21px;
+      font-weight: 950;
+    }
+
+    .info-list {
+      display: grid;
+      grid-template-columns: 106px minmax(0, 1fr);
+      row-gap: 10px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .info-list dt {
+      color: #7d8fa3;
+      font-weight: 900;
+    }
+
+    .info-list dd {
+      min-width: 0;
+      margin: 0;
+      color: #334155;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .image-section[hidden],
+    .room-estimate-section[hidden] { display: none; }
+
+    .plan-frame {
+      display: grid;
+      min-height: 260px;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid #dbe4ee;
+      border-radius: 18px;
+      background: #fff;
+    }
+
+    .plan-frame img {
+      display: block;
+      max-width: 100%;
+      max-height: 390px;
+      object-fit: contain;
+    }
+
+    .estimate-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 16px;
+    }
+
+    .estimate-table th,
+    .estimate-table td {
+      padding: 14px 9px;
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .estimate-table thead th {
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 950;
+    }
+
+    .estimate-table thead span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .estimate-table tbody th {
+      width: 138px;
+      color: #8b9db0;
+      text-align: left;
+      font-weight: 900;
+    }
+
+    .estimate-table td {
+      color: #334155;
+      font-weight: 700;
+    }
+
+    .room-estimate-table tbody th {
+      text-align: center;
+    }
+
+    .room-estimate-table tbody th span,
+    .room-estimate-table td span {
+      display: block;
+      margin-top: 4px;
+      color: #4d7088;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .room-estimate-table td strong {
+      display: block;
+      color: #183b55;
+      font-size: 16px;
+      font-weight: 950;
+    }
+
+    .room-estimate-table .room-total-row th,
+    .room-estimate-table .room-total-row td {
+      background: #f2f8fc;
+      color: #005383;
+      font-weight: 950;
+    }
+
+    .room-estimate-note {
+      margin: -6px 0 12px;
+      padding: 0 0 0 14px;
+      border: 0;
+      border-left: 2px solid rgba(0, 83, 131, .28);
+      background: transparent;
+      color: rgba(24, 59, 85, .64);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    .discount-row td {
+      color: #635bff;
+    }
+
+    .sub-row th,
+    .sub-row td {
+      color: #94a3b8;
+      font-size: 14px;
+      padding-top: 4px;
+    }
+
+    .total-row th,
+    .total-row td {
+      border-bottom: 0;
+      background: var(--brand-soft);
+      color: #4338ca;
+      font-size: 20px;
+      font-weight: 950;
+      padding-top: 18px;
+      padding-bottom: 18px;
+    }
+
+    .total-row th {
+      border-radius: 12px 0 0 12px;
+      color: #312e81;
+      font-size: 17px;
+    }
+
+    .total-row td:last-child {
+      border-radius: 0 12px 12px 0;
+    }
+
+    .notice {
+      color: #91a1b4;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.75;
+    }
+
+    .notice-title {
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 950;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: center;
+      gap: 34px;
+      padding: 24px 30px;
+      color: #95a3b4;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    /* Premium Loenmat document skin */
+    .quote {
+      width: min(100%, 920px);
+      background:
+        linear-gradient(180deg, #ffffff 0, #ffffff 78%, #fbfcfb 100%);
+      border: 1px solid #ccd6d0;
+      border-radius: 18px;
+      box-shadow: 0 22px 60px rgba(18, 25, 28, .14);
+    }
+
+    .quote-header {
+      align-items: stretch;
+      padding: 0;
+      border-bottom: 0;
+      background: #17211f;
+      color: #fff;
+    }
+
+    .quote-header::before {
+      content: "";
+      width: 12px;
+      background: linear-gradient(180deg, #b89b5e, #1f7a6c);
+    }
+
+    .quote-title {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 146px;
+      padding: 34px 46px;
+      color: #fff;
+      font-size: 34px;
+      font-weight: 950;
+    }
+
+    .quote-title::before {
+      content: "LOENMAT ESTIMATE";
+      margin-bottom: 11px;
+      color: #b9a36f;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .logo-box {
+      flex: 0 0 214px;
+      display: grid;
+      align-content: center;
+      min-width: 214px;
+      border: 0;
+      border-left: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      padding: 34px 32px;
+      font-size: 24px;
+      letter-spacing: 9px;
+    }
+
+    .logo-box::after {
+      content: "Premium floor mat";
+      display: block;
+      margin-top: 10px;
+      color: #a9b9b4;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    .quote-section {
+      margin: 0 54px;
+      padding: 34px 0;
+      border-bottom: 1px solid #dfe7e3;
+    }
+
+    .quote-section:first-of-type {
+      margin-top: 44px;
+      padding: 30px 34px;
+      border: 1px solid #d8e4df;
+      border-left: 6px solid #1f7a6c;
+      border-radius: 14px;
+      background: #f8fbf9;
+    }
+
+    .section-label,
+    .notice-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+      color: #1f7a6c;
+      font-size: 14px;
+      font-weight: 950;
+      letter-spacing: .4px;
+    }
+
+    .section-label::before,
+    .notice-title::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: #b89b5e;
+    }
+
+    .customer-name {
+      margin-bottom: 20px;
+      color: #101817;
+      font-size: 24px;
+      font-weight: 950;
+    }
+
+    .info-list {
+      grid-template-columns: 110px minmax(0, 1fr);
+      row-gap: 12px;
+      font-size: 17px;
+    }
+
+    .info-list dt {
+      color: #74867e;
+      font-weight: 950;
+    }
+
+    .info-list dd {
+      color: #243331;
+      font-weight: 800;
+    }
+
+    .plan-frame {
+      border: 1px solid #d7e1dd;
+      border-radius: 14px;
+      background:
+        linear-gradient(45deg, rgba(31,122,108,.045) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(31,122,108,.045) 25%, transparent 25%),
+        #fff;
+      background-size: 22px 22px;
+    }
+
+    .estimate-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border: 1px solid #d8e4df;
+      border-radius: 14px;
+      background: #fff;
+      font-size: 15px;
+    }
+
+    .estimate-table th,
+    .estimate-table td {
+      border-bottom: 1px solid #e4ebe8;
+    }
+
+    .estimate-table thead th {
+      background: #17211f;
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .estimate-table thead span {
+      color: #a9b9b4;
+      font-size: 12px;
+    }
+
+    .estimate-table tbody th {
+      background: #f8fbf9;
+      color: #6f817a;
+    }
+
+    .estimate-table td {
+      color: #253432;
+    }
+
+    .discount-row td {
+      color: #1f7a6c;
+      font-weight: 900;
+    }
+
+    .total-row th,
+    .total-row td {
+      background: #1f7a6c;
+      color: #fff;
+      font-size: 19px;
+      box-shadow: inset 0 4px 0 rgba(184,155,94,.65);
+    }
+
+    .total-row th {
+      border-radius: 0;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .total-row td:last-child {
+      border-radius: 0;
+    }
+
+    .notice {
+      padding: 22px 24px;
+      border: 1px solid #dde7e3;
+      border-radius: 14px;
+      background: #f8fbf9;
+      color: #6e7f79;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .footer {
+      justify-content: center;
+      padding: 28px 30px 34px;
+      color: #17211f;
+      font-size: 16px;
+      letter-spacing: 1.8px;
+    }
+
+    /* Loenmat cream-gold estimate skin */
+    .quote {
+      position: relative;
+      width: min(100%, 920px);
+      background:
+        radial-gradient(circle at 88px 82px, rgba(190, 145, 78, .12), transparent 220px),
+        radial-gradient(circle at 94% 4%, rgba(0, 82, 126, .10), transparent 230px),
+        linear-gradient(180deg, #fffaf1 0%, #fffdf8 44%, #fffaf2 100%);
+      border: 1px solid #e4d0b0;
+      border-radius: 0;
+      box-shadow: 0 18px 52px rgba(47, 37, 25, .16);
+      overflow: hidden;
+    }
+
+    .quote::before {
+      content: "L";
+      position: absolute;
+      top: -42px;
+      right: 26px;
+      color: rgba(190, 145, 78, .10);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 210px;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .quote::after {
+      content: "";
+      position: absolute;
+      right: 58px;
+      bottom: 98px;
+      width: 170px;
+      height: 170px;
+      opacity: .22;
+      background:
+        radial-gradient(ellipse at 70% 20%, transparent 45%, #be914e 46%, transparent 48%),
+        radial-gradient(ellipse at 30% 70%, transparent 45%, #be914e 46%, transparent 48%);
+      transform: rotate(-28deg);
+      pointer-events: none;
+    }
+
+    .quote > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .quote-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+      gap: 28px;
+      min-height: 164px;
+      padding: 42px 54px 34px;
+      background: transparent;
+      color: #1a2735;
+    }
+
+    .quote-header::before {
+      content: "";
+      grid-column: 2;
+      grid-row: 1;
+      width: 2px;
+      height: 82px;
+      background: #be914e;
+    }
+
+    .logo-box {
+      grid-column: 1;
+      grid-row: 1;
+      min-width: 0;
+      border: 0;
+      border-left: 0;
+      background: transparent;
+      color: #005383;
+      padding: 0;
+      text-align: center;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 42px;
+      font-weight: 500;
+      letter-spacing: 0;
+      line-height: 1.05;
+    }
+
+    .brand-main {
+      display: block;
+      white-space: nowrap;
+    }
+
+    .brand-main b {
+      font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -1px;
+    }
+
+    .brand-line {
+      display: block;
+      width: 220px;
+      height: 1px;
+      margin: 16px auto 0;
+      background: #005383;
+      opacity: .65;
+    }
+
+    .logo-box::after {
+      content: "";
+      display: none;
+    }
+
+    .quote-title {
+      grid-column: 3;
+      grid-row: 1;
+      display: block;
+      min-height: auto;
+      padding: 0;
+      color: #151515;
+      font-family: "Noto Serif KR", "Nanum Myeongjo", Georgia, serif;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .quote-title::before {
+      content: "";
+      display: none;
+    }
+
+    .quote-title::after {
+      content: "PREMIUM ESTIMATE";
+      display: block;
+      margin-top: 12px;
+      color: #be914e;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      text-align: center;
+    }
+
+    .quote-section {
+      margin: 0 54px;
+      padding: 30px 0;
+      border-bottom: 0;
+    }
+
+    .quote-section:first-of-type {
+      margin: 6px 54px 28px;
+      padding: 22px 28px;
+      border: 1px solid #dec59f;
+      border-left: 1px solid #dec59f;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .76);
+      box-shadow: 0 8px 22px rgba(89, 68, 42, .10);
+    }
+
+    .quote-section:first-of-type .section-label,
+    .quote-section:first-of-type .customer-name {
+      display: none;
+    }
+
+    .quote-section:first-of-type .customer-name {
+      display: flex;
+      align-items: center;
+      min-height: 58px;
+      margin: 0;
+      border-bottom: 1px solid #ead8bc;
+      color: #222;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .quote-section:first-of-type .customer-name::before {
+      content: "고객명";
+      width: 118px;
+      color: #181818;
+      font-size: 15px;
+      font-weight: 850;
+    }
+
+    .quote-section:first-of-type .customer-name::after {
+      content: "";
+      order: -1;
+      width: 22px;
+      height: 22px;
+      margin-right: 13px;
+      border: 1.5px solid #be914e;
+      border-radius: 50%;
+      background: rgba(190, 145, 78, .05);
+      flex: 0 0 auto;
+    }
+
+    .section-label,
+    .notice-title {
+      gap: 12px;
+      margin-bottom: 18px;
+      color: #191919;
+      font-family: "Noto Serif KR", "Nanum Myeongjo", serif;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .section-label::before,
+    .notice-title::before {
+      width: 26px;
+      height: 1px;
+      background: #be914e;
+    }
+
+    .info-list {
+      grid-template-columns: 96px minmax(0, 1fr) 96px minmax(0, 1fr);
+      column-gap: 18px;
+      row-gap: 0;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .info-list dt,
+    .info-list dd {
+      min-height: 56px;
+      border-bottom: 1px solid #ead8bc;
+    }
+
+    .info-list dt {
+      display: flex;
+      align-items: center;
+    }
+
+    .info-list dd {
+      display: block;
+      padding: 15px 0;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: keep-all;
+    }
+
+    .info-list dt:nth-last-of-type(1),
+    .info-list dt:nth-last-of-type(2),
+    .info-list dd:nth-last-of-type(1),
+    .info-list dd:nth-last-of-type(2) {
+      border-bottom: 0;
+    }
+
+    .info-list dt {
+      color: #181818;
+      font-weight: 850;
+    }
+
+    .info-list dt::before {
+      content: "";
+      width: 22px;
+      height: 22px;
+      margin-right: 13px;
+      border: 1.5px solid #be914e;
+      border-radius: 50%;
+      background: rgba(190, 145, 78, .05);
+      flex: 0 0 auto;
+    }
+
+    .info-list dd {
+      color: #222;
+      font-weight: 700;
+    }
+
+    .plan-frame {
+      position: relative;
+      min-height: 315px;
+      border: 2px solid #dec59f;
+      border-radius: 0;
+      background: rgba(255, 255, 255, .66);
+      box-shadow: inset 0 0 0 8px rgba(255, 250, 241, .9);
+    }
+
+    .plan-frame::before,
+    .plan-frame::after {
+      content: "";
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border-color: #dec59f;
+      pointer-events: none;
+    }
+
+    .plan-frame::before {
+      top: -2px;
+      left: -2px;
+      border-top: 8px double #dec59f;
+      border-left: 8px double #dec59f;
+    }
+
+    .plan-frame::after {
+      right: -2px;
+      bottom: -2px;
+      border-right: 8px double #dec59f;
+      border-bottom: 8px double #dec59f;
+    }
+
+    .plan-frame img {
+      max-height: 330px;
+      padding: 18px;
+    }
+
+    .estimate-table {
+      border: 1px solid #dec59f;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .82);
+      box-shadow: 0 8px 18px rgba(89, 68, 42, .07);
+      font-size: 15px;
+    }
+
+    .estimate-table th,
+    .estimate-table td {
+      padding: 13px 8px;
+      border-right: 1px solid #ead8bc;
+      border-bottom: 1px solid #ead8bc;
+    }
+
+    .estimate-table tr > *:last-child {
+      border-right: 0;
+    }
+
+    .estimate-table thead th {
+      background: rgba(252, 244, 231, .86);
+      color: #171717;
+      font-size: 15px;
+      font-weight: 850;
+    }
+
+    .estimate-table thead span {
+      color: #534b40;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .estimate-table tbody th {
+      background: rgba(250, 241, 226, .72);
+      color: #2c2924;
+      text-align: center;
+      font-weight: 850;
+    }
+
+    .estimate-table td {
+      color: #171717;
+      font-weight: 700;
+    }
+
+    .discount-row td {
+      color: #90622b;
+    }
+
+    .sub-row th,
+    .sub-row td {
+      color: #6c6254;
+      font-size: 14px;
+    }
+
+    .total-row th,
+    .total-row td {
+      background: linear-gradient(180deg, #fbf1df, #f4e2c5);
+      color: #7a4b15;
+      box-shadow: inset 0 1px 0 #dec59f;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .total-row th {
+      color: #7a4b15;
+      font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
+      font-size: 18px;
+    }
+
+    .notice {
+      padding: 0 0 0 16px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #242424;
+      font-size: 14px;
+      font-weight: 650;
+      line-height: 1.9;
+    }
+
+    .footer {
+      margin-top: 28px;
+      padding: 26px 30px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.04) 25%, transparent 25%) 0 0 / 42px 42px,
+        linear-gradient(180deg, #1d2021, #111315);
+      color: #d0a96a;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    /* Loenmat blue-white skin */
+    body {
+      background: #eef6fb;
+    }
+
+    .quote {
+      background:
+        radial-gradient(circle at 92% 4%, rgba(0, 83, 131, .08), transparent 250px),
+        linear-gradient(180deg, #ffffff 0%, #ffffff 72%, #f7fbff 100%);
+      min-height: 0;
+      border: 1px solid #cfe3f1;
+      box-shadow: 0 18px 50px rgba(0, 50, 85, .12);
+    }
+
+    .quote::before,
+    .quote::after {
+      display: none;
+    }
+
+    .quote-header {
+      background: #fff;
+      border-bottom: 1px solid #d7e9f4;
+    }
+
+    .quote-header::before {
+      background: #005383;
+      opacity: .8;
+    }
+
+    .logo-box {
+      color: #005383;
+    }
+
+    .brand-line {
+      background: #005383;
+      opacity: .55;
+    }
+
+    .quote-title {
+      color: #123b59;
+    }
+
+    .quote-title::after {
+      color: #005383;
+      opacity: .72;
+    }
+
+    .quote-section:first-of-type {
+      border: 1px solid #cfe3f1;
+      background: #fff;
+      box-shadow: 0 10px 26px rgba(0, 83, 131, .08);
+    }
+
+    .quote-section:first-of-type .customer-name {
+      border-bottom: 1px solid #d7e9f4;
+      color: #123b59;
+    }
+
+    .quote-section:first-of-type .customer-name::before {
+      color: #123b59;
+    }
+
+    .quote-section:first-of-type .customer-name::after,
+    .info-list dt::before {
+      width: 30px;
+      height: 30px;
+      margin-right: 14px;
+      border: 0;
+      border-radius: 0;
+      background-color: transparent;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 28px 28px;
+    }
+
+    .quote-section:first-of-type .customer-name::after {
+      background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 16c4.1 0 7-3.2 7-7s-2.9-7-7-7-7 3.2-7 7 2.9 7 7 7Zm-11 13c1.6-6 6-9 11-9s9.4 3 11 9' fill='none' stroke='%23005383' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+
+    .info-list dt,
+    .info-list dd {
+      border-bottom: 1px solid #d7e9f4;
+    }
+
+    .info-list dt {
+      color: #123b59;
+    }
+
+    .info-list dd {
+      color: #183b55;
+    }
+
+    .info-list dt:nth-of-type(1)::before {
+      background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 6c4 7 9 12 16 16l-3 5c-10-3-16-9-19-19l6-2Zm0 0 3 5m10 11-5-3M23 5c2.5.9 4.1 2.6 5 5M20 10c1.3.5 2.2 1.4 2.7 2.7' fill='none' stroke='%23005383' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+
+    .info-list dt:nth-of-type(2)::before {
+      background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 29s10-8.5 10-17A10 10 0 1 0 6 12c0 8.5 10 17 10 17Z' fill='none' stroke='%23005383' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='12' r='3.6' fill='none' stroke='%23005383' stroke-width='2.1'/%3E%3C/svg%3E");
+    }
+
+    .info-list dt:nth-of-type(3)::before {
+      background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m5 22 17-17 5 5-17 17-5-5Z' fill='none' stroke='%23005383' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='m11 20 2 2m1-7 2 2m1-7 2 2m-9 12 2 2' fill='none' stroke='%23005383' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+
+    .info-list dt:nth-of-type(4)::before {
+      background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='5' y='7' width='22' height='20' rx='2.5' fill='none' stroke='%23005383' stroke-width='2'/%3E%3Cpath d='M10 4v6m12-6v6M5 13h22m6 5h.01M16 18h.01M22 18h.01M10 22h.01M16 22h.01' fill='none' stroke='%23005383' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+
+    .info-list dt:nth-of-type(5)::before {
+      background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 15 16 6l11 9v12H8V15' fill='none' stroke='%23005383' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M13 27v-8h6v8' fill='none' stroke='%23005383' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+
+    .info-list dt:nth-of-type(6)::before {
+      background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m20 5 3 3-6 6 1 4-4-1-6 6-3-3 6-6-1-4 4 1 6-6Z' fill='none' stroke='%23005383' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='m21 20 6 6m0-6-6 6' fill='none' stroke='%23005383' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+
+    .section-label,
+    .notice-title {
+      color: #123b59;
+    }
+
+    .section-label::before,
+    .notice-title::before {
+      background: #005383;
+      opacity: .75;
+    }
+
+    .plan-frame {
+      border-color: #cfe3f1;
+      background: #fff;
+      box-shadow: inset 0 0 0 8px #f3f9fd;
+    }
+
+    .plan-frame::before,
+    .plan-frame::after {
+      border-color: #005383;
+      opacity: .35;
+    }
+
+    .plan-frame::before {
+      border-top-color: #005383;
+      border-left-color: #005383;
+    }
+
+    .plan-frame::after {
+      border-right-color: #005383;
+      border-bottom-color: #005383;
+    }
+
+    .estimate-table {
+      border-color: #cfe3f1;
+      background: #fff;
+      box-shadow: 0 8px 18px rgba(0, 83, 131, .06);
+    }
+
+    .estimate-table th,
+    .estimate-table td {
+      border-right-color: #d7e9f4;
+      border-bottom-color: #d7e9f4;
+    }
+
+    .estimate-table thead th {
+      background: #f2f8fc;
+      color: #123b59;
+    }
+
+    .estimate-table thead span,
+    .estimate-table tbody th,
+    .sub-row th,
+    .sub-row td {
+      color: #4d7088;
+    }
+
+    .estimate-table tbody th {
+      background: #f7fbfe;
+    }
+
+    .estimate-table td {
+      color: #183b55;
+    }
+
+    .discount-row td {
+      color: #005383;
+    }
+
+    .total-row th,
+    .total-row td {
+      background: #005383;
+      color: #fff;
+      box-shadow: none;
+    }
+
+    .total-row th {
+      color: #fff;
+    }
+
+    .notice {
+      color: #183b55;
+    }
+
+    .footer {
+      background: #005383;
+      color: #fff;
+    }
+
+    @media (max-width: 1100px) {
+      .app { grid-template-columns: 1fr; }
+      .editor { position: static; }
+    }
+
+    @media (max-width: 760px) {
+      .app { padding: 10px; }
+      .grid, .mode-row { grid-template-columns: 1fr; }
+      .quote {
+        width: 920px;
+        transform: scale(.56);
+        transform-origin: top left;
+        margin-bottom: -560px;
+      }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .editor { display: none; }
+      .app {
+        display: block;
+        padding: 0;
+        max-width: none;
+      }
+      .quote {
+        width: 210mm;
+        min-height: 297mm;
+        border: 0;
+        box-shadow: none;
+      }
+      .quote-header { padding: 18mm 18mm 14mm; }
+      .quote-section { padding: 12mm 18mm; }
+      @page { size: A4 portrait; margin: 0; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <main class="app">
+    <aside class="editor">
+      <h1>로엔매트 견적서</h1>
+      <p class="desc">기존 로엔매트 견적 템플릿의 상품/가격/안내 문구를 사용해 고객용 견적서와 카톡용 문구를 함께 만듭니다.</p>
 
-    <div class="card">
-      <h1>로엔매트 견적 템플릿</h1>
-      <div class="row" style="margin-top:10px;">
-        <button id="btnModeNormal" class="mode-btn active" type="button">일반</button>
-        <button id="btnModeGroup" class="mode-btn" type="button">공동구매</button>
-        <span class="mini">현재 선택: <b id="modeLabel">일반</b></span>
-      </div>
-      <div class="mini muted">
-        고객정보 + 시공공간 선택 + 1200/600 장수 입력 → 카톡용 견적 문구 생성
-      </div>
-    </div>
+      <section class="edit-section">
+        <h2>견적 모드</h2>
+        <div class="mode-row">
+          <button id="btnModeNormal" class="mode-btn active" type="button">일반</button>
+          <button id="btnModeGroup" class="mode-btn" type="button">공동구매</button>
+        </div>
+      </section>
 
-    <div class="card">
-      <h2>고객 정보</h2>
-      <div class="grid">
-        <div>
-          <label>성함(고객명)</label>
-          <input id="customerName" placeholder="고객명" />
+      <section class="edit-section">
+        <h2>고객 정보</h2>
+        <div class="grid">
+          <div class="field">
+            <label for="customerName">성함</label>
+            <input id="customerName" value="박재준" />
+          </div>
+          <div class="field">
+            <label for="phone">연락처</label>
+            <input id="phone" value="010-5373-0509" />
+          </div>
+          <div class="field full">
+            <label for="address">주소지</label>
+            <input id="address" value="충청북도 청주시 서원구 매봉로 131 (모충동, 한화포레나 청주매봉)" />
+          </div>
+          <div class="field">
+            <label for="pyeongType">평형타입</label>
+            <input id="pyeongType" value="34평A" />
+          </div>
+          <div class="field">
+            <label for="quoteDate">견적일</label>
+            <input id="quoteDate" type="date" />
+          </div>
+          <div class="field">
+            <label for="extension">확장여부</label>
+            <select id="extension">
+              <option value="베란다 확장">베란다 확장</option>
+              <option value="베란다 비확장">베란다 비확장</option>
+              <option value="">표시 안 함</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="areasPreset">시공공간</label>
+            <select id="areasPreset">
+              <option value="">선택하세요</option>
+              <option value="거실">거실</option>
+              <option value="거실, 복도">거실, 복도</option>
+              <option value="거실, 복도, 주방" selected>거실, 복도, 주방</option>
+              <option value="거실, 복도, 아일랜드">거실, 복도, 아일랜드</option>
+              <option value="거실, 방">거실, 방</option>
+              <option value="거실, 복도, 방">거실, 복도, 방</option>
+              <option value="거실, 복도, 아일랜드, 방">거실, 복도, 아일랜드, 방</option>
+              <option value="거실, 복도, 주방, 방">거실, 복도, 주방, 방</option>
+              <option value="직접입력">직접입력</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="areasCustom">시공공간 직접입력</label>
+            <input id="areasCustom" placeholder="예: 거실, 복도, 펜트리" />
+          </div>
         </div>
-        <div>
-          <label>연락처</label>
-          <input id="phone" placeholder="카카오톡 채널 문의" />
-        </div>
-        <div>
-          <label>주소지</label>
-          <input id="address" placeholder="주소를 입력해 주세요" />
-        </div>
-        <div>
-          <label>평형타입</label>
-          <input id="pyeongType" placeholder="평형" />
-        </div>
-        <div>
-          <label>확장여부</label>
-          <select id="extension">
-            <option value="베란다 확장">베란다 확장</option>
-            <option value="베란다 비확장">베란다 비확장</option>
-            <option value="">표시 안 함</option>
-          </select>
-        </div>
-        <div>
-          <label>시공공간</label>
-          <select id="areasPreset">
-            <option value="">선택하세요</option>
-            <option value="거실">거실</option>
-            <option value="거실, 복도">거실, 복도</option>
-            <option value="거실, 복도, 주방">거실, 복도, 주방</option>
-            <option value="거실, 복도, 아일랜드">거실, 복도, 아일랜드</option>
-            <option value="거실, 방">거실, 방</option>
-            <option value="거실, 복도, 방">거실, 복도, 방</option>
-            <option value="거실, 복도, 아일랜드, 방">거실, 복도, 아일랜드, 방</option>
-            <option value="거실, 복도, 주방, 방">거실, 복도, 주방, 방</option>
-            <option value="직접입력">직접입력</option>
-          </select>
-        </div>
-        <div>
-          <label>시공공간 직접입력</label>
-          <input id="areasCustom" placeholder="예: 거실, 복도, 펜트리" />
-          <div class="hint muted">직접입력 값이 있으면 선택값보다 우선 반영됩니다.</div>
-        </div>
-      </div>
-    </div>
+      </section>
 
-    <div class="card">
-      <h2>장수 입력</h2>
-      <div class="qty-grid">
-        <div>
-          <label>1200 장수</label>
-          <input id="qty1200" type="number" min="0" step="0.5" placeholder="0" />
-          <div class="hint">1200 제품 쿠폰 적용가 계산에 반영됩니다.</div>
+      <section class="edit-section">
+        <h2>장수 입력</h2>
+        <div class="grid">
+          <div class="field">
+            <label for="qty1200">1200 장수</label>
+            <input id="qty1200" type="number" min="0" step="0.5" value="27" />
+            <p id="normalCouponHint" class="hint">일반 모드는 1200 쿠폰 할인 장당 44,000원을 함께 표시합니다.</p>
+          </div>
+          <div class="field">
+            <label for="qty600">600 장수</label>
+            <input id="qty600" type="number" min="0" step="1" value="108" />
+            <p id="hint600" class="hint">예상 600장수(1200×4): -</p>
+          </div>
         </div>
 
+        <div class="option-row">
+          <label class="check-label" for="optRoom">
+            <input id="optRoom" type="checkbox" />
+            방 추가(옵션)
+          </label>
+          <button id="btnAddRoom" class="secondary" type="button" disabled>방 추가</button>
+          <span id="roomCountText" class="hint">체크 시 방 이름과 600 장수를 여러 개 추가할 수 있습니다. (현재 0개 / 최대 4개)</span>
+        </div>
+        <div id="roomList"></div>
+        <div class="actions">
+          <button id="generateBtn" type="button">견적 생성</button>
+          <button id="copyBtn" class="secondary" type="button">복사</button>
+          <button id="copyImageBtn" class="secondary" type="button">이미지 복사</button>
+          <button id="resetBtn" class="secondary" type="button">초기화</button>
+        </div>
+      </section>
+
+      <section class="edit-section">
+        <h2>시공 범위 이미지</h2>
+        <div class="field">
+          <label for="planImage">이미지 업로드</label>
+          <input id="planImage" type="file" accept="image/*" />
+        </div>
+        <div class="actions">
+          <button id="clearImage" class="secondary" type="button">이미지 제거</button>
+        </div>
+        <p class="hint">이미지를 넣지 않으면 견적서에서 이미지 영역이 아예 보이지 않습니다.</p>
+      </section>
+
+      <section class="edit-section">
+        <h2>카톡용 출력</h2>
+        <textarea id="output" readonly></textarea>
+      </section>
+
+      <p id="status" class="status"></p>
+    </aside>
+
+    <article class="quote" id="quote">
+      <header class="quote-header">
+        <h1 class="quote-title">견적서</h1>
+        <div class="logo-box">
+          <span class="brand-main">Loen <b>로엔매트</b></span>
+          <span class="brand-line"></span>
+        </div>
+      </header>
+
+      <section class="quote-section">
+        <h2 class="section-label">고객 정보</h2>
+        <p class="customer-name" id="viewCustomerNameLine"></p>
+        <dl class="info-list">
+          <dt>연락처</dt><dd id="viewPhone"></dd>
+          <dt>주소</dt><dd id="viewAddress"></dd>
+          <dt>면적</dt><dd id="viewPyeong"></dd>
+          <dt>견적일</dt><dd id="viewQuoteDate"></dd>
+          <dt>시공 범위</dt><dd id="viewAreas"></dd>
+          <dt>시공 방식</dt><dd id="viewInstallMethod"></dd>
+        </dl>
+      </section>
+
+      <section class="quote-section image-section" id="imageSection" hidden>
+        <h2 class="section-label">시공 범위 도면</h2>
+        <div class="plan-frame">
+          <img id="viewPlanImage" alt="시공 범위 이미지" />
+        </div>
+      </section>
+
+      <section class="quote-section">
+        <h2 class="section-label">제품별 견적 비교</h2>
+        <table class="estimate-table">
+          <thead>
+            <tr id="productHeader"></tr>
+          </thead>
+          <tbody id="estimateRows"></tbody>
+        </table>
+      </section>
+
+      <section class="quote-section room-estimate-section" id="roomEstimateSection" hidden>
+        <h2 class="section-label">방 추가 견적</h2>
+        <p class="room-estimate-note">방은 구조상 재단이 많아 1200보다 600 사이즈가 마감이 더 깔끔해서 600 기준으로 견적드렸습니다.</p>
+        <table class="estimate-table room-estimate-table">
+          <thead>
+            <tr>
+              <th>공간</th>
+              <th>베이직 600<span>60cm × 60cm × 2.2cm</span></th>
+              <th>스킨터치 600<span>60cm × 60cm × 2.2cm</span></th>
+            </tr>
+          </thead>
+          <tbody id="roomEstimateRows"></tbody>
+        </table>
+      </section>
+
+      <section class="quote-section">
+        <h2 class="notice-title">안내</h2>
+        <div class="notice" id="viewNotice"></div>
+      </section>
+
+      <footer class="footer">
+        <span>loenmat.com</span>
+      </footer>
+    </article>
+  </main>
+
+  <script src="./html2canvas.min.js"></script>
+  <script>
+    const PRODUCTS = [
+      { title: "베이직 600", size: "60cm × 60cm × 2.2cm", qtyKey: "qty600", unitPrice: 24000 },
+      { title: "스킨터치 600", size: "60cm × 60cm × 2.2cm", qtyKey: "qty600", unitPrice: 27000 },
+      { title: "베이직 1200", size: "120cm × 120cm × 2.4cm", qtyKey: "qty1200", unitPrice: 159000 },
+      { title: "스킨터치 1200", size: "120cm × 120cm × 2.4cm", qtyKey: "qty1200", unitPrice: 169000 },
+    ];
+
+    const GROUP_PRODUCTS = [
+      { title: "베이직 600", size: "60cm × 60cm × 2.2cm", qtyKey: "qty600", unitPrice: 24000, priceLabel: "행사 기준" },
+      { title: "스킨터치 600", size: "60cm × 60cm × 2.2cm", qtyKey: "qty600", unitPrice: 27000, priceLabel: "행사 기준" },
+      { title: "베이직 1200", size: "120cm × 120cm × 2.4cm", qtyKey: "qty1200", unitPrice: 99000, priceLabel: "공동구매 특가" },
+      { title: "스킨터치 1200", size: "120cm × 120cm × 2.4cm", qtyKey: "qty1200", unitPrice: 109000, priceLabel: "공동구매 특가" },
+    ];
+
+    const COUPON_DISCOUNT_PER_1200 = 44000;
+    let estimateMode = "normal";
+    let uploadedImageUrl = "";
+
+    const $ = (id) => document.getElementById(id);
+
+    function formatWon(value) {
+      return `${Math.round(Number(value) || 0).toLocaleString("ko-KR")}원`;
+    }
+
+    function formatQty(qty) {
+      const value = Number(qty);
+      if (!Number.isFinite(value)) return "0장";
+      return `${Number.isInteger(value) ? value : value.toFixed(1)}장`;
+    }
+
+    function safeNum(value) {
+      const number = Number(value);
+      return Number.isFinite(number) && number > 0 ? number : 0;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function dateText(value) {
+      return value ? value.replaceAll("-", ".") : "";
+    }
+
+    function getProducts() {
+      return estimateMode === "group" ? GROUP_PRODUCTS : PRODUCTS;
+    }
+
+    function getAreas() {
+      const custom = $("areasCustom").value.trim();
+      const preset = $("areasPreset").value;
+      if (custom) return custom;
+      if (preset === "직접입력") return "";
+      return preset;
+    }
+
+    function getPyeongLine() {
+      const pyeongType = $("pyeongType").value.trim();
+      const extension = $("extension").value;
+      if (pyeongType && extension) return `${pyeongType} (${extension})`;
+      return pyeongType;
+    }
+
+    function getInstallMethod(areas) {
+      return (areas || "").trim() === "거실" ? "본사 전문 시공팀 시공" : "본사 전문 시공팀 무료 시공";
+    }
+
+    function getServiceFeeNotice(areas) {
+      return (areas || "").trim() === "거실"
+        ? "거실 단독 시공 시 출장시공비 10만원이 발생합니다."
+        : "전문 시공 서비스 및 출장비는 전액 무료입니다.";
+    }
+
+    function collectInput() {
+      return {
+        customerName: $("customerName").value.trim(),
+        phone: $("phone").value.trim() || "카카오톡 채널 문의",
+        address: $("address").value.trim(),
+        pyeongLine: getPyeongLine(),
+        areas: getAreas(),
+        qty1200: safeNum($("qty1200").value),
+        qty600: safeNum($("qty600").value),
+        rooms: getRooms(),
+      };
+    }
+
+    function qtyFor(product, data) {
+      return product.qtyKey === "qty1200" ? data.qty1200 : data.qty600;
+    }
+
+    function productBaseTotal(product, data) {
+      return qtyFor(product, data) * product.unitPrice;
+    }
+
+    function productDiscount(product, data) {
+      if (estimateMode === "normal" && product.qtyKey === "qty1200") {
+        return qtyFor(product, data) * COUPON_DISCOUNT_PER_1200;
+      }
+      return 0;
+    }
+
+    function productFinalTotal(product, data) {
+      return productBaseTotal(product, data) - productDiscount(product, data);
+    }
+
+    function getRoomProducts() {
+      return getProducts().filter((product) => product.qtyKey === "qty600");
+    }
+
+    function roomProductTotal(room, product) {
+      return room.qty * product.unitPrice;
+    }
+
+    function renderRoomEstimate(data) {
+      const section = $("roomEstimateSection");
+      const rowsEl = $("roomEstimateRows");
+      const rooms = data.rooms || [];
+      const products = getRoomProducts();
+
+      if (!rooms.length || products.length < 2) {
+        section.hidden = true;
+        rowsEl.innerHTML = "";
+        return;
+      }
+
+      section.hidden = false;
+
+      const rows = rooms.map((room) => `
+        <tr>
+          <th>${escapeHtml(room.name)}<span>${formatQty(room.qty)}</span></th>
+          ${products.map((product) => `
+            <td>
+              <strong>${formatWon(roomProductTotal(room, product))}</strong>
+              <span>${formatWon(product.unitPrice)} × ${formatQty(room.qty)}</span>
+            </td>
+          `).join("")}
+        </tr>
+      `).join("");
+
+      const totalRow = `
+        <tr class="room-total-row">
+          <th>방 추가 합계</th>
+          ${products.map((product) => `
+            <td>${formatWon(rooms.reduce((sum, room) => sum + roomProductTotal(room, product), 0))}</td>
+          `).join("")}
+        </tr>
+      `;
+
+      rowsEl.innerHTML = rows + totalRow;
+    }
+
+    function getRooms() {
+      if (!$("optRoom").checked) return [];
+      return Array.from(document.querySelectorAll(".room-item")).map((item, index) => {
+        const name = item.querySelector(".room-name").value.trim() || `방 ${index + 1}`;
+        const qty = safeNum(item.querySelector(".room-qty").value);
+        return { name, qty };
+      }).filter((room) => room.qty > 0);
+    }
+
+    function addRoom(name = "", qty = "") {
+      if (!$("optRoom").checked) return;
+      if ($("roomList").children.length >= 4) {
+        setStatus("방 추가는 최대 4개까지 가능합니다.");
+        updateRoomState();
+        return;
+      }
+      const item = document.createElement("div");
+      item.className = "room-item";
+      item.innerHTML = `
+        <div>
+          <label>방 이름</label>
+          <input class="room-name" value="${escapeHtml(name)}" placeholder="방" />
+        </div>
         <div>
           <label>600 장수</label>
-          <input id="qty600" type="number" min="0" step="1" placeholder="0" />
-          <div id="hint600" class="hint" style="color:#999;">예상 600장수(1200×4): -</div>
+          <input class="room-qty" type="number" min="0" step="1" value="${escapeHtml(qty)}" />
         </div>
-      </div>
+        <button class="secondary room-delete" type="button">삭제</button>
+      `;
+      item.querySelectorAll("input").forEach((input) => input.addEventListener("input", renderAll));
+      item.querySelector(".room-delete").addEventListener("click", () => {
+        item.remove();
+        updateRoomState();
+        renderAll();
+      });
+      $("roomList").appendChild(item);
+      updateRoomState();
+    }
 
-      <div class="option-row">
-        <label class="check">
-          <input id="optRoom" type="checkbox" />
-          방 추가(옵션)
-        </label>
+    function updateRoomState() {
+      const enabled = $("optRoom").checked;
+      const count = $("roomList").children.length;
+      $("btnAddRoom").disabled = !enabled || count >= 4;
+      $("roomCountText").textContent = `체크 시 방 이름과 600 장수를 여러 개 추가할 수 있습니다. (현재 ${count}개 / 최대 4개)`;
+      if (!enabled) $("roomList").innerHTML = "";
+    }
 
-        <div class="field">
-          <div class="room-tools">
-            <button class="secondary" id="btnAddRoom" type="button" disabled>방 추가</button>
-            <div class="sub">체크 시 방 이름과 600 장수를 여러 개 추가할 수 있습니다.</div>
-          </div>
-          <div id="roomList" class="room-list"></div>
-        </div>
-      </div>
+    function renderQuote(data) {
+      $("viewCustomerNameLine").textContent = data.customerName ? `${data.customerName} 고객님` : "고객님";
+      $("viewPhone").textContent = data.phone;
+      $("viewAddress").textContent = data.address || "-";
+      $("viewPyeong").textContent = data.pyeongLine || "-";
+      $("viewQuoteDate").textContent = dateText($("quoteDate").value) || "-";
+      $("viewAreas").textContent = data.areas || "-";
+      $("viewInstallMethod").textContent = getInstallMethod(data.areas);
 
-      <div class="action-row">
-        <button id="btnGenerate">견적 생성</button>
-        <button class="secondary" id="btnCopy">복사</button>
-        <button class="secondary" id="btnClear">초기화</button>
-        <span id="status" class="mini"></span>
-      </div>
-    </div>
+      const products = getProducts();
+      $("productHeader").innerHTML = `
+        <th></th>
+        ${products.map((product) => `<th>${escapeHtml(product.title)}<span>${escapeHtml(product.size)}</span></th>`).join("")}
+      `;
 
-    <div class="card">
-      <h2>출력(카톡용)</h2>
-      <textarea id="output" readonly placeholder="견적 생성 버튼을 누르면 여기에 문구가 생성됩니다."></textarea>
-    </div>
+      const row = (label, values, className = "") => `
+        <tr class="${className}">
+          <th>${label}</th>
+          ${values.map((value) => `<td>${value}</td>`).join("")}
+        </tr>
+      `;
 
-  </div>
+      $("estimateRows").innerHTML = [
+        row("장당금액", products.map((product) => formatWon(product.unitPrice))),
+        row("예상장수", products.map((product) => formatQty(qtyFor(product, data)))),
+        row("상품금액", products.map((product) => formatWon(productBaseTotal(product, data)))),
+        estimateMode === "normal"
+          ? row("쿠폰 할인", products.map((product) => productDiscount(product, data) ? `-${formatWon(productDiscount(product, data))}` : "-"), "discount-row")
+          : row("적용 기준", products.map((product) => product.priceLabel || "행사 기준"), "sub-row"),
+        row("합계", products.map((product) => formatWon(productFinalTotal(product, data))), "total-row"),
+      ].join("");
 
-<script>
-  const PRODUCTS = [
-    { title: "베이직 600", size: "60cm x 60cm x 2.2cm", qtyKey: "qty600", unitPrice: 24000 },
-    { title: "스킨터치 600", size: "60cm x 60cm x 2.2cm", qtyKey: "qty600", unitPrice: 27000 },
-    { title: "베이직 1200", size: "120cm x 120cm x 2.4cm", qtyKey: "qty1200", unitPrice: 159000 },
-    { title: "스킨터치 1200", size: "120cm x 120cm x 2.4cm", qtyKey: "qty1200", unitPrice: 169000 },
-  ];
+      renderRoomEstimate(data);
 
-  const GROUP_PRODUCTS = [
-    { title: "베이직 600", size: "60cm x 60cm x 2.2cm", qtyKey: "qty600", unitPrice: 24000, priceLabel: "행사 기준" },
-    { title: "스킨터치 600", size: "60cm x 60cm x 2.2cm", qtyKey: "qty600", unitPrice: 27000, priceLabel: "행사 기준" },
-    { title: "베이직 1200", size: "120cm x 120cm x 2.4cm", qtyKey: "qty1200", unitPrice: 99000, priceLabel: "공동구매 특가" },
-    { title: "스킨터치 1200", size: "120cm x 120cm x 2.4cm", qtyKey: "qty1200", unitPrice: 109000, priceLabel: "공동구매 특가" },
-  ];
+      const noticeLines = [
+        "예상 수량은 다수의 시공 데이터 및 온라인 도면 기준으로 산출된 수량이며, 실제 시공 시 현장 구조에 따라 다소 차이가 있을 수 있습니다.",
+        "결제는 실제 시공 후 사용된 수량 기준으로 진행됩니다.",
+        "계약금은 없으며, 스케줄 배정 후 시공 당일 결제가 진행됩니다.",
+        "해당 견적은 계좌이체 기준이며, 현금영수증 및 세금계산서 발행 가능합니다.",
+        estimateMode === "normal" ? "카드결제(할부 가능) 시에는 VAT 10%가 별도 발생합니다." : "카드결제 및 세금계산서 발행 시 VAT는 별도 안내드립니다.",
+        "프로모션 혜택은 시공일이 아닌 예약일 기준으로 적용됩니다.",
+        getServiceFeeNotice(data.areas),
+      ];
+      $("viewNotice").innerHTML = noticeLines.map((line) => `<p>✓ ${escapeHtml(line)}</p>`).join("");
+    }
 
-  const ROOM_PRODUCTS = PRODUCTS.filter((product) => product.qtyKey === "qty600");
-  const COUPON_DISCOUNT_PER_1200 = 44000;
-  let estimateMode = "normal";
-
-  const $ = (id) => document.getElementById(id);
-
-  function formatWon(n) {
-    const v = Number(n);
-    if (!isFinite(v)) return "0원";
-    return Math.round(v).toLocaleString("ko-KR") + "원";
-  }
-
-  function formatQty(qty) {
-    const v = Number(qty);
-    if (!isFinite(v)) return "0장";
-    const s = (Math.round(v * 10) % 10 === 0) ? String(Math.round(v)) : String(v);
-    return `${s}장`;
-  }
-
-  function safeNum(v) {
-    const n = Number(v);
-    return (isFinite(n) && n > 0) ? n : 0;
-  }
-
-  function setStatus(msg, good) {
-    const el = $("status");
-    el.textContent = msg;
-    el.className = "mini " + (good ? "ok" : "");
-    setTimeout(() => { if (el.textContent === msg) el.textContent = ""; }, 2500);
-  }
-
-  function getAreas() {
-    const custom = $("areasCustom").value.trim();
-    const preset = $("areasPreset").value;
-    if (custom) return custom;
-    if (preset === "직접입력") return "";
-    return preset;
-  }
-
-  function getPyeongLine() {
-    const pyeongType = $("pyeongType").value.trim();
-    const extension = $("extension").value;
-    if (pyeongType && extension) return `${pyeongType} (${extension})`;
-    if (pyeongType) return pyeongType;
-    return "";
-  }
-
-  function getServiceFeeNotice(areas) {
-    return (areas || "").trim() === "거실"
-      ? "✔ 거실 단독 시공 시 출장시공비 10만원이 발생합니다."
-      : "✔ 전문 시공 서비스 및 출장비는 전액 무료입니다.";
-  }
-
-  function getInstallMethod(areas) {
-    return (areas || "").trim() === "거실"
-      ? "본사 전문 시공팀 시공"
-      : "본사 전문 시공팀 무료 시공";
-  }
-
-  function productBlock(product, qty) {
-    const total = qty * product.unitPrice;
-    const couponTotal = total - (product.qtyKey === "qty1200" ? qty * COUPON_DISCOUNT_PER_1200 : 0);
-    const couponLine = product.qtyKey === "qty1200"
-      ? `\n▫ 쿠폰 적용 시 : ${formatWon(couponTotal)}\n(장당 44,000원 최대할인 적용 기준)`
-      : "";
-
-    return `[ ${product.title} ]
+    function productBlock(product, data) {
+      const qty = qtyFor(product, data);
+      const total = productBaseTotal(product, data);
+      const discount = productDiscount(product, data);
+      const couponLine = discount
+        ? `\n▫ 쿠폰 적용 시 : ${formatWon(total - discount)}\n(장당 44,000원 최대할인 적용 기준)`
+        : "";
+      const priceLabel = product.priceLabel || "행사 기준";
+      return `[ ${product.title} ]
 ▫ 사이즈 : ${product.size}
-▫ 행사 기준 : 장당 ${formatWon(product.unitPrice)}
+▫ ${priceLabel} : 장당 ${formatWon(product.unitPrice)}
 ▫ 예상 수량 : ${formatQty(qty)}
 ▫ 총 금액 : ${formatWon(total)}${couponLine}`;
-  }
+    }
 
-  function groupProductBlock(product, qty) {
-    const total = qty * product.unitPrice;
-    return `[ ${product.title} ]
-▫ 사이즈 : ${product.size}
-▫ ${product.priceLabel} : 장당 ${formatWon(product.unitPrice)}
-▫ 예상 수량 : ${formatQty(qty)}
-▫ 총 금액 : ${formatWon(total)}`;
-  }
-
-  function roomProductBlock(product, room) {
-    const total = room.qty * product.unitPrice;
-    return `[ ${room.name} - ${product.title} ]
+    function buildKakaoText(data) {
+      const productBlocks = getProducts().map((product) => productBlock(product, data)).join("\n\n");
+      const roomBlocks = data.rooms.length > 0
+        ? `\n\n■ 방 추가 견적\n※ 방은 구조상 재단이 많아 1200보다 600 사이즈가 마감이 더 깔끔해서 600 기준으로 견적드렸습니다.\n\n${data.rooms.map((room) => PRODUCTS.filter((product) => product.qtyKey === "qty600").map((product) => {
+            const total = room.qty * product.unitPrice;
+            return `[ ${room.name} - ${product.title} ]
 ▫ 사이즈 : ${product.size}
 ▫ 행사 기준 : 장당 ${formatWon(product.unitPrice)}
 ▫ 예상 수량 : ${formatQty(room.qty)}
 ▫ 총 금액 : ${formatWon(total)}`;
-  }
+          }).join("\n\n")).join("\n\n")}`
+        : "";
 
-  function getRooms() {
-    return Array.from(document.querySelectorAll(".room-item")).map((item, index) => {
-      const name = item.querySelector(".room-name").value.trim() || `방 ${index + 1}`;
-      const qty = safeNum(item.querySelector(".room-qty").value);
-      return { name, qty };
-    }).filter((room) => room.qty > 0);
-  }
+      const modeGuide = estimateMode === "group"
+        ? `■ 공동구매 특가 안내
+▫ 1200사이즈 베이직 : 장당 99,000원
+▫ 1200사이즈 스킨터치 : 장당 109,000원
 
-  function addRoom(name = "", qty = "") {
-    const roomList = $("roomList");
-    const roomNo = roomList.children.length + 1;
-    const item = document.createElement("div");
-    item.className = "room-item";
-    item.innerHTML = `
-      <div>
-        <label>방 이름</label>
-        <input class="room-name" placeholder="방 ${roomNo}" value="${name}" />
-      </div>
-      <div>
-        <label>방 600 장수</label>
-        <input class="room-qty" type="number" min="0" step="1" placeholder="30" value="${qty}" />
-      </div>
-      <button class="secondary room-delete" type="button">삭제</button>
-    `;
-
-    item.querySelector(".room-name").addEventListener("input", generate);
-    item.querySelector(".room-qty").addEventListener("input", generate);
-    item.querySelector(".room-delete").addEventListener("click", () => {
-      item.remove();
-      generate();
-    });
-
-    roomList.appendChild(item);
-  }
-
-  function setRoomOption(on) {
-    $("btnAddRoom").disabled = !on;
-    if (on && $("roomList").children.length === 0) addRoom();
-    if (!on) $("roomList").innerHTML = "";
-  }
-
-  function collectInput() {
-    return {
-      customerName: $("customerName").value.trim(),
-      phone: $("phone").value.trim() || "카카오톡 채널 문의",
-      address: $("address").value.trim(),
-      pyeongLine: getPyeongLine(),
-      areas: getAreas(),
-      qty1200: safeNum($("qty1200").value),
-      qty600: safeNum($("qty600").value),
-      optRoom: $("optRoom").checked,
-      rooms: $("optRoom").checked ? getRooms() : [],
-    };
-  }
-
-  function buildEstimate(data) {
-    const qtyByKey = {
-      qty600: data.qty600,
-      qty1200: data.qty1200,
-    };
-
-    if (estimateMode === "group") return buildGroupEstimate(data, qtyByKey);
-
-    const productBlocks = PRODUCTS
-      .map((product) => productBlock(product, qtyByKey[product.qtyKey]))
-      .join("\n\n");
-
-    const roomBlocks = (data.optRoom && data.rooms.length > 0)
-      ? `\n\n■ 방 추가 견적\n\n${data.rooms.map((room) => ROOM_PRODUCTS.map((product) => roomProductBlock(product, room)).join("\n\n")).join("\n\n")}`
-      : "";
-
-    const customerNameLine = data.customerName ? `${data.customerName} 님` : "고객님";
-    const installMethod = getInstallMethod(data.areas);
-    const serviceFeeNotice = getServiceFeeNotice(data.areas);
-
-    return `안녕하세요 로엔매트입니다.
-문의주신 내용을 기준으로 예상 견적 안내드립니다.
-
-■ 고객 정보
-▫ 성함 : ${customerNameLine}
-▫ 연락처 : ${data.phone}
-▫ 주소지 : ${data.address}
-▫ 평형타입 : ${data.pyeongLine}
-▫ 시공공간 : ${data.areas}
-▫ 시공방식 : ${installMethod}
-
-━━━━━━━━━━
-
-■ 제품 구성
-
-${productBlocks}${roomBlocks}
-
-━━━━━━━━━━
-
-■ 컬러 안내
-▫ 베이직 라인 : 뮤트화이트 / 뉴트럴 베이지 / 모던 그레이
-▫ 시그니처 라인 : 스킨터치 단일 컬러
-
-━━━━━━━━━━
-
-■ 쿠폰 혜택 안내
+※ 해당 금액은 공동구매 특가 기준입니다.
+※ 공동구매 특가는 이미 최대 할인 적용 금액으로, 다른 이벤트 할인 / 리뷰이벤트 / 쿠폰 할인 등은 중복 적용이 어렵습니다.
+※ 1200사이즈 기준 적용 혜택이며, 600사이즈는 기존 행사 기준으로 안내됩니다.`
+        : `■ 쿠폰 혜택 안내
 ▫ 리뷰 작성 혜택 : 장당 20,000원 할인
 ▫ 샘플 체험 고객 혜택 : 장당 9,000원 할인
 ▫ 주간 한정 특별 혜택 : 장당 15,000원 할인
 ※ 쿠폰은 1200사이즈 한정 적용입니다.
-※ 적용 가능 쿠폰은 상담 시 안내드립니다.
+※ 적용 가능 쿠폰은 상담 시 안내드립니다.`;
 
-━━━━━━━━━━
+      const customerNameLine = data.customerName ? `${data.customerName} 님` : "고객님";
 
-■ 안내사항
-✔ 예상 수량은 다수의 시공 데이터 및 온라인 도면 기준으로 산출된 수량이며, 실제 시공 시 현장 구조에 따라 다소 차이가 있을 수 있습니다.
-✔ 결제는 실제 시공 후 사용된 수량 기준으로 진행됩니다.
-✔ 계약금은 없으며, 스케줄 배정 후 시공 당일 결제가 진행됩니다.
-✔ 펜트리 공간이 있으신 경우 미리 말씀 주시면 펜트리 전용 매트도 함께 준비해 방문드립니다.
-✔ 해당 견적은 계좌이체 기준이며, 현금영수증 및 세금계산서 발행 가능합니다.
-✔ 카드결제(할부 가능) 시에는 VAT 10%가 별도 발생합니다.
-✔ 프로모션 혜택은 시공일이 아닌 예약일 기준으로 적용됩니다.
-${serviceFeeNotice}
-
-궁금하신 점 있으시면 편하게 말씀 주세요.
-고객님 공간에 맞춰 자세히 안내드리겠습니다.`;
-  }
-
-  function buildGroupEstimate(data, qtyByKey) {
-    const productBlocks = GROUP_PRODUCTS
-      .map((product) => groupProductBlock(product, qtyByKey[product.qtyKey]))
-      .join("\n\n");
-    const roomBlocks = (data.optRoom && data.rooms.length > 0)
-      ? `\n\n■ 방 추가 견적\n\n${data.rooms.map((room) => ROOM_PRODUCTS.map((product) => roomProductBlock(product, room)).join("\n\n")).join("\n\n")}`
-      : "";
-    const customerNameLine = data.customerName ? `${data.customerName} 님` : "고객님";
-    const installMethod = getInstallMethod(data.areas);
-    const serviceFeeNotice = getServiceFeeNotice(data.areas);
-
-    return `안녕하세요 로엔매트입니다.
+      return `안녕하세요 로엔매트입니다.
 문의주신 내용을 기준으로 예상 견적 안내드립니다.
 
 ■ 고객 정보
@@ -444,7 +1782,7 @@ ${serviceFeeNotice}
 ▫ 주소지 : ${data.address}
 ▫ 평형타입 : ${data.pyeongLine}
 ▫ 시공공간 : ${data.areas}
-▫ 시공방식 : ${installMethod}
+▫ 시공방식 : ${getInstallMethod(data.areas)}
 
 ━━━━━━━━━━
 
@@ -460,116 +1798,257 @@ ${productBlocks}${roomBlocks}
 
 ━━━━━━━━━━
 
-■ 공동구매 특가 안내
-▫ 1200사이즈 베이직 : 장당 99,000원
-▫ 1200사이즈 스킨터치 : 장당 109,000원
-
-※ 해당 금액은 공동구매 특가 기준입니다.
-※ 공동구매 특가는 이미 최대 할인 적용 금액으로, 다른 이벤트 할인 / 리뷰이벤트 / 쿠폰 할인 등은 중복 적용이 어렵습니다.
-※ 1200사이즈 기준 적용 혜택이며, 600사이즈는 기존 행사 기준으로 안내됩니다.
+${modeGuide}
 
 ━━━━━━━━━━
 
 ■ 안내사항
-
 ✔ 예상 수량은 다수의 시공 데이터 및 온라인 도면 기준으로 산출된 수량이며, 실제 시공 시 현장 구조에 따라 다소 차이가 있을 수 있습니다.
-
 ✔ 결제는 실제 시공 후 사용된 수량 기준으로 진행됩니다.
-
 ✔ 계약금은 없으며, 스케줄 배정 후 시공 당일 결제가 진행됩니다.
-
 ✔ 펜트리 공간이 있으신 경우 미리 말씀 주시면 펜트리 전용 매트도 함께 준비해 방문드립니다.
-
 ✔ 해당 견적은 계좌이체 기준이며, 현금영수증 및 세금계산서 발행 가능합니다.
-
-✔ 카드결제 및 세금계산서 발행 시 VAT는 별도 안내드립니다.
-
 ✔ 프로모션 혜택은 시공일이 아닌 예약일 기준으로 적용됩니다.
-
-${serviceFeeNotice}
+✔ ${getServiceFeeNotice(data.areas)}
 
 궁금하신 점 있으시면 편하게 말씀 주세요.
 고객님 공간에 맞춰 자세히 안내드리겠습니다.`;
-  }
-
-  function setEstimateMode(mode) {
-    estimateMode = mode;
-    $("btnModeNormal").classList.toggle("active", mode === "normal");
-    $("btnModeGroup").classList.toggle("active", mode === "group");
-    $("modeLabel").textContent = mode === "group" ? "공동구매" : "일반";
-    generate();
-  }
-
-  function generate() {
-    const data = collectInput();
-    $("output").value = buildEstimate(data);
-    update600Hint();
-    setStatus("생성 완료", true);
-  }
-
-  async function copyOutput() {
-    const text = $("output").value.trim();
-    if (!text) { setStatus("복사할 내용이 없어요", false); return; }
-
-    try {
-      await navigator.clipboard.writeText(text);
-      setStatus("복사 완료", true);
-    } catch (e) {
-      $("output").focus();
-      $("output").select();
-      const ok = document.execCommand("copy");
-      setStatus(ok ? "복사 완료" : "복사 실패", ok);
-      window.getSelection?.().removeAllRanges?.();
     }
-  }
 
-  function clearAll() {
-    $("customerName").value = "";
-    $("phone").value = "";
-    $("address").value = "";
-    $("pyeongType").value = "";
-    $("extension").value = "베란다 확장";
-    $("areasPreset").value = "";
-    $("areasCustom").value = "";
-    $("qty1200").value = "";
-    $("qty600").value = "";
-    $("optRoom").checked = false;
-    setRoomOption(false);
-    $("output").value = "";
-    update600Hint();
-    setStatus("초기화 완료", true);
-  }
+    function renderAll() {
+      const data = collectInput();
+      renderQuote(data);
+      $("output").value = buildKakaoText(data);
+      const qty1200 = safeNum($("qty1200").value);
+      $("hint600").textContent = qty1200 > 0 ? `예상 600장수(1200×4): ${qty1200 * 4}장` : "예상 600장수(1200×4): -";
+      $("normalCouponHint").hidden = estimateMode === "group";
+      updateRoomState();
+    }
 
-  function update600Hint() {
-    const qty1200 = Number($("qty1200").value);
-    const hint = $("hint600");
-    if (isFinite(qty1200) && qty1200 > 0) hint.textContent = `예상 600장수(1200×4): ${qty1200 * 4}장`;
-    else hint.textContent = "예상 600장수(1200×4): -";
-  }
+    function setMode(mode) {
+      estimateMode = mode;
+      $("btnModeNormal").classList.toggle("active", mode === "normal");
+      $("btnModeGroup").classList.toggle("active", mode === "group");
+      renderAll();
+    }
 
-  $("btnGenerate").addEventListener("click", generate);
-  $("btnCopy").addEventListener("click", copyOutput);
-  $("btnClear").addEventListener("click", clearAll);
-  $("btnModeNormal").addEventListener("click", () => setEstimateMode("normal"));
-  $("btnModeGroup").addEventListener("click", () => setEstimateMode("group"));
-  $("btnAddRoom").addEventListener("click", () => {
-    addRoom();
-    generate();
-  });
+    function handleImage(file) {
+      if (uploadedImageUrl) URL.revokeObjectURL(uploadedImageUrl);
+      if (!file) {
+        uploadedImageUrl = "";
+        $("imageSection").hidden = true;
+        $("viewPlanImage").removeAttribute("src");
+        return;
+      }
+      uploadedImageUrl = URL.createObjectURL(file);
+      $("viewPlanImage").src = uploadedImageUrl;
+      $("imageSection").hidden = false;
+    }
 
-  $("optRoom").addEventListener("change", () => {
-    const on = $("optRoom").checked;
-    setRoomOption(on);
-    generate();
-  });
+    async function copyOutput() {
+      try {
+        await navigator.clipboard.writeText($("output").value);
+        setStatus("카톡 문구를 복사했습니다.");
+      } catch {
+        $("output").focus();
+        $("output").select();
+        document.execCommand("copy");
+        setStatus("카톡 문구를 복사했습니다.");
+      }
+    }
 
-  ["customerName", "phone", "address", "pyeongType", "extension", "areasPreset", "areasCustom", "qty1200", "qty600"].forEach((id) => {
-    $(id).addEventListener("input", generate);
-    $(id).addEventListener("change", generate);
-  });
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
 
-  update600Hint();
-  generate();
-</script>
+    function getInlineStyleText() {
+      return Array.from(document.styleSheets).map((sheet) => {
+        try {
+          return Array.from(sheet.cssRules).map((rule) => rule.cssText).join("\n");
+        } catch {
+          return "";
+        }
+      }).join("\n");
+    }
+
+    async function renderQuotePngBlob() {
+      if (window.html2canvas) {
+        const canvas = await html2canvas($("quote"), {
+          backgroundColor: "#ffffff",
+          scale: Math.min(3, Math.max(2, window.devicePixelRatio || 2)),
+          useCORS: true,
+          allowTaint: true,
+          imageTimeout: 15000,
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: document.documentElement.scrollWidth,
+          windowHeight: document.documentElement.scrollHeight,
+        });
+
+        return await new Promise((resolve, reject) => {
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob);
+            else reject(new Error("PNG 이미지 생성에 실패했습니다."));
+          }, "image/png", 1);
+        });
+      }
+
+      const quote = $("quote");
+      const rect = quote.getBoundingClientRect();
+      const width = Math.ceil(rect.width);
+      const height = Math.ceil(rect.height);
+      const scale = Math.min(3, Math.max(2, window.devicePixelRatio || 2));
+      const clone = quote.cloneNode(true);
+
+      clone.style.width = `${width}px`;
+      clone.style.minHeight = `${height}px`;
+      clone.style.margin = "0";
+      clone.style.boxShadow = "none";
+
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+          <foreignObject width="100%" height="100%">
+            <div xmlns="http://www.w3.org/1999/xhtml">
+              <style>${getInlineStyleText()}</style>
+              ${clone.outerHTML}
+            </div>
+          </foreignObject>
+        </svg>
+      `;
+
+      const svgUrl = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml;charset=utf-8" }));
+      try {
+        const image = new Image();
+        const loaded = new Promise((resolve, reject) => {
+          image.onload = resolve;
+          image.onerror = reject;
+        });
+        image.src = svgUrl;
+        await loaded;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.ceil(width * scale);
+        canvas.height = Math.ceil(height * scale);
+        const context = canvas.getContext("2d");
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        return await new Promise((resolve, reject) => {
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob);
+            else reject(new Error("PNG 이미지 생성에 실패했습니다."));
+          }, "image/png", 1);
+        });
+      } finally {
+        URL.revokeObjectURL(svgUrl);
+      }
+    }
+
+    window.renderQuotePngBlob = renderQuotePngBlob;
+
+    async function copyQuoteImage() {
+      renderAll();
+      $("copyImageBtn").disabled = true;
+      setStatus("견적서 이미지를 만드는 중입니다...");
+
+      try {
+        const blob = await renderQuotePngBlob();
+        const filename = `로엔매트_견적서_${dateText($("quoteDate").value) || "image"}.png`;
+
+        if (navigator.clipboard && window.ClipboardItem) {
+          await navigator.clipboard.write([
+            new ClipboardItem({ "image/png": blob }),
+          ]);
+          setStatus("견적서 이미지를 복사했습니다. 카톡/문자에 붙여넣을 수 있습니다.", 6000);
+        } else {
+          downloadBlob(blob, filename);
+          setStatus("이미지 복사가 제한되어 PNG 파일로 저장했습니다.", 6000);
+        }
+      } catch (error) {
+        try {
+          const blob = await renderQuotePngBlob();
+          downloadBlob(blob, `로엔매트_견적서_${dateText($("quoteDate").value) || "image"}.png`);
+          setStatus("이미지 복사가 제한되어 PNG 파일로 저장했습니다.", 6000);
+        } catch {
+          setStatus("이미지 생성에 실패했습니다. 새로고침 후 다시 시도해 주세요.", 6000);
+        }
+      } finally {
+        $("copyImageBtn").disabled = false;
+      }
+    }
+
+    function setStatus(message, duration = 2200) {
+      $("status").textContent = message;
+      setTimeout(() => {
+        if ($("status").textContent === message) $("status").textContent = "";
+      }, duration);
+    }
+
+    function initDate() {
+      const today = new Date();
+      $("quoteDate").value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    }
+
+    function resetAll() {
+      $("customerName").value = "";
+      $("phone").value = "";
+      $("address").value = "";
+      $("pyeongType").value = "";
+      $("extension").value = "베란다 확장";
+      $("areasPreset").value = "";
+      $("areasCustom").value = "";
+      $("qty1200").value = "";
+      $("qty600").value = "";
+      $("optRoom").checked = false;
+      $("roomList").innerHTML = "";
+      $("planImage").value = "";
+      handleImage(null);
+      updateRoomState();
+      setMode("normal");
+      setStatus("초기화했습니다.");
+    }
+
+    initDate();
+    document.querySelectorAll("input, select, textarea").forEach((input) => {
+      if (input.id !== "output" && input.id !== "planImage") {
+        input.addEventListener("input", renderAll);
+        input.addEventListener("change", renderAll);
+      }
+    });
+    $("btnModeNormal").addEventListener("click", () => setMode("normal"));
+    $("btnModeGroup").addEventListener("click", () => setMode("group"));
+    $("optRoom").addEventListener("change", () => {
+      updateRoomState();
+      renderAll();
+    });
+    $("btnAddRoom").addEventListener("click", () => {
+      addRoom();
+      renderAll();
+    });
+    $("generateBtn").addEventListener("click", () => {
+      renderAll();
+      setStatus("견적을 생성했습니다.");
+    });
+    $("planImage").addEventListener("change", (event) => handleImage(event.target.files[0]));
+    $("clearImage").addEventListener("click", () => {
+      $("planImage").value = "";
+      handleImage(null);
+      setStatus("이미지를 제거했습니다.");
+    });
+    $("copyBtn").addEventListener("click", copyOutput);
+    $("copyImageBtn").addEventListener("click", () => {
+      setTimeout(copyQuoteImage, 0);
+    });
+    $("resetBtn").addEventListener("click", resetAll);
+    renderAll();
+  </script>
 </body>
 </html>
