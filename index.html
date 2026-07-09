@@ -102,6 +102,35 @@
       padding: 9px 10px;
     }
 
+    .plan-scale-control {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      background: #fbfdff;
+    }
+
+    .plan-scale-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+      color: #73869c;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .plan-scale-head output {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    #planImageScale {
+      padding: 0;
+      accent-color: #005383;
+    }
+
     textarea {
       min-height: 180px;
       resize: vertical;
@@ -302,6 +331,8 @@
       max-width: 100%;
       max-height: 390px;
       object-fit: contain;
+      transform-origin: center;
+      transition: transform .15s ease;
     }
 
     .estimate-table {
@@ -1399,6 +1430,13 @@
           <label for="planImage">이미지 업로드</label>
           <input id="planImage" type="file" accept="image/*" />
         </div>
+        <div class="plan-scale-control">
+          <div class="plan-scale-head">
+            <span>도면 크기</span>
+            <output id="planImageScaleValue" for="planImageScale">100%</output>
+          </div>
+          <input id="planImageScale" type="range" min="60" max="200" step="5" value="100" />
+        </div>
         <div class="actions">
           <button id="clearImage" class="secondary" type="button">이미지 제거</button>
         </div>
@@ -1842,7 +1880,14 @@ ${modeGuide}
       }
       uploadedImageUrl = URL.createObjectURL(file);
       $("viewPlanImage").src = uploadedImageUrl;
+      updatePlanImageScale();
       $("imageSection").hidden = false;
+    }
+
+    function updatePlanImageScale() {
+      const value = Number($("planImageScale").value) || 100;
+      $("planImageScaleValue").textContent = `${value}%`;
+      $("viewPlanImage").style.transform = `scale(${value / 100})`;
     }
 
     async function copyOutput() {
@@ -2010,6 +2055,8 @@ ${modeGuide}
       $("optRoom").checked = false;
       $("roomList").innerHTML = "";
       $("planImage").value = "";
+      $("planImageScale").value = "100";
+      updatePlanImageScale();
       handleImage(null);
       updateRoomState();
       setMode("normal");
@@ -2042,6 +2089,7 @@ ${modeGuide}
       setStatus("견적을 생성했습니다.");
     });
     $("planImage").addEventListener("change", (event) => handleImage(event.target.files[0]));
+    $("planImageScale").addEventListener("input", updatePlanImageScale);
     $("clearImage").addEventListener("click", () => {
       $("planImage").value = "";
       handleImage(null);
