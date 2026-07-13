@@ -2231,9 +2231,13 @@ ${modeGuide}
       }, duration);
     }
 
-    function initDate() {
+    function todayDateValue() {
       const today = new Date();
-      $("quoteDate").value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+      return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    }
+
+    function initDate() {
+      $("quoteDate").value = todayDateValue();
     }
 
     function resetAll() {
@@ -2241,6 +2245,7 @@ ${modeGuide}
       $("phone").value = "";
       $("address").value = "";
       $("pyeongType").value = "";
+      $("quoteDate").value = todayDateValue();
       $("extension").value = "베란다 확장";
       $("areasPreset").value = "";
       $("areasCustom").value = "";
@@ -2253,7 +2258,7 @@ ${modeGuide}
       updatePlanImageScale();
       handleImage(null);
       updateRoomState();
-      setMode("normal");
+      renderAll();
       setStatus("초기화했습니다.");
     }
 
