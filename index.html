@@ -2295,9 +2295,7 @@ ${modeGuide}
       setStatus("이미지를 제거했습니다.");
     });
     $("copyBtn").addEventListener("click", copyOutput);
-    $("copyImageBtn").addEventListener("click", () => {
-      setTimeout(copyQuoteImage, 0);
-    });
+    $("copyImageBtn").addEventListener("click", copyQuoteImage);
     $("saveImageBtn").addEventListener("click", () => {
       setTimeout(downloadQuoteImage, 0);
     });
