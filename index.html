@@ -1426,7 +1426,7 @@
           <div class="field">
             <label for="qty1200">1200 장수</label>
             <input id="qty1200" type="number" min="0" step="0.5" value="" />
-            <p id="normalCouponHint" class="hint">일반 모드는 스킨터치 1200만 장당 118,000원으로 안내합니다.</p>
+            <p id="normalCouponHint" class="hint">일반 모드는 1200 쿠폰 할인 장당 44,000원을 함께 표시합니다.</p>
           </div>
           <div class="field">
             <label for="qty600">600 장수</label>
@@ -1561,10 +1561,10 @@
       { title: "베이직 600", size: "60cm × 60cm × 2.2cm", qtyKey: "qty600", unitPrice: 24000, priceLabel: "행사 기준" },
       { title: "스킨터치 600", size: "60cm × 60cm × 2.2cm", qtyKey: "qty600", unitPrice: 27000, priceLabel: "행사 기준" },
       { title: "베이직 1200", size: "120cm × 120cm × 2.4cm", qtyKey: "qty1200", unitPrice: 99000, priceLabel: "공동구매 특가" },
-      { title: "스킨터치 1200", size: "120cm × 120cm × 2.4cm", qtyKey: "qty1200", unitPrice: 109000, priceLabel: "공동구매 특가" },
+      { title: "스킨터치 1200", size: "120cm × 120cm × 2.4cm", qtyKey: "qty1200", unitPrice: 118000, priceLabel: "공동구매 특가" },
     ];
 
-    const SKIN_TOUCH_1200_DISCOUNT_PRICE = 118000;
+    const COUPON_DISCOUNT_PER_1200 = 44000;
     let estimateMode = "normal";
     let uploadedImageUrl = "";
 
@@ -1648,13 +1648,9 @@
       return qtyFor(product, data) * product.unitPrice;
     }
 
-    function isSkinTouch1200(product) {
-      return product.title === "스킨터치 1200";
-    }
-
     function productDiscount(product, data) {
-      if (estimateMode === "normal" && isSkinTouch1200(product)) {
-        return qtyFor(product, data) * (product.unitPrice - SKIN_TOUCH_1200_DISCOUNT_PRICE);
+      if (estimateMode === "normal" && product.qtyKey === "qty1200") {
+        return qtyFor(product, data) * COUPON_DISCOUNT_PER_1200;
       }
       return 0;
     }
@@ -1783,7 +1779,7 @@
         row("예상장수", products.map((product) => formatQty(qtyFor(product, data)))),
         row("상품금액", products.map((product) => formatWon(productBaseTotal(product, data)))),
         estimateMode === "normal"
-          ? row("스킨터치 할인", products.map((product) => productDiscount(product, data) ? `-${formatWon(productDiscount(product, data))}` : "-"), "discount-row")
+          ? row("쿠폰 할인", products.map((product) => productDiscount(product, data) ? `-${formatWon(productDiscount(product, data))}` : "-"), "discount-row")
           : row("적용 기준", products.map((product) => product.priceLabel || "행사 기준"), "sub-row"),
         row("합계", products.map((product) => formatWon(productFinalTotal(product, data))), "total-row"),
       ].join("");
@@ -1808,7 +1804,7 @@
       const total = productBaseTotal(product, data);
       const discount = productDiscount(product, data);
       const couponLine = discount
-        ? `\n▫ 스킨터치 적용가 : ${formatWon(total - discount)}\n(장당 118,000원 적용 기준)`
+        ? `\n▫ 쿠폰 적용 시 : ${formatWon(total - discount)}\n(장당 44,000원 최대할인 적용 기준)`
         : "";
       const priceLabel = product.priceLabel || "행사 기준";
       return `[ ${product.title} ]
@@ -1834,15 +1830,17 @@
       const modeGuide = estimateMode === "group"
         ? `■ 공동구매 특가 안내
 ▫ 1200사이즈 베이직 : 장당 99,000원
-▫ 1200사이즈 스킨터치 : 장당 109,000원
+▫ 1200사이즈 스킨터치 : 장당 118,000원
 
 ※ 해당 금액은 공동구매 특가 기준입니다.
 ※ 공동구매 특가는 이미 최대 할인 적용 금액으로, 다른 이벤트 할인 / 리뷰이벤트 / 쿠폰 할인 등은 중복 적용이 어렵습니다.
 ※ 1200사이즈 기준 적용 혜택이며, 600사이즈는 기존 행사 기준으로 안내됩니다.`
-        : `■ 스킨터치 1200 혜택 안내
-▫ 스킨터치 1200 : 장당 118,000원 적용
-▫ 베이직 1200 : 할인 없이 기준가로 안내
-※ 해당 혜택은 스킨터치 1200 한정 적용입니다.`;
+        : `■ 쿠폰 혜택 안내
+▫ 리뷰 작성 혜택 : 장당 20,000원 할인
+▫ 샘플 체험 고객 혜택 : 장당 9,000원 할인
+▫ 주간 한정 특별 혜택 : 장당 15,000원 할인
+※ 쿠폰은 1200사이즈 한정 적용입니다.
+※ 적용 가능 쿠폰은 상담 시 안내드립니다.`;
 
       const customerNameLine = data.customerName ? `${data.customerName} 님` : "고객님";
 
