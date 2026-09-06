@@ -1870,6 +1870,29 @@ ${modeGuide}
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
+    function withTimeout(promise, ms, message) {
+      let timer;
+      const timeout = new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(message)), ms);
+      });
+      return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+    }
+
+    function setButtonBusy(button, busy, timeoutMs = 45000) {
+      if (!button) return;
+      button.disabled = busy;
+      if (button._busyTimer) {
+        clearTimeout(button._busyTimer);
+        button._busyTimer = null;
+      }
+      if (busy) {
+        button._busyTimer = setTimeout(() => {
+          button.disabled = false;
+          button._busyTimer = null;
+        }, timeoutMs);
+      }
+    }
+
     function getInlineStyleText() {
       return Array.from(document.styleSheets).map((sheet) => {
         try {
@@ -1958,17 +1981,20 @@ ${modeGuide}
 
     async function copyQuoteImage() {
       renderAll();
-      $("copyImageBtn").disabled = true;
+      const copyButton = $("copyImageBtn");
+      setButtonBusy(copyButton, true);
       setStatus("견적서 이미지를 만드는 중입니다...");
 
       try {
-        const blob = await renderQuotePngBlob();
+        const blob = await withTimeout(renderQuotePngBlob(), 45000, "PNG 이미지 생성 시간이 초과되었습니다.");
         const filename = `로엔매트_견적서_${dateText($("quoteDate").value) || "image"}.png`;
 
         if (navigator.clipboard && window.ClipboardItem) {
-          await navigator.clipboard.write([
-            new ClipboardItem({ "image/png": blob }),
-          ]);
+          await withTimeout(
+            navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]),
+            15000,
+            "브라우저 이미지 복사가 응답하지 않습니다."
+          );
           setStatus("견적서 이미지를 복사했습니다. 카톡/문자에 붙여넣을 수 있습니다.", 6000);
         } else {
           downloadBlob(blob, filename);
@@ -1976,14 +2002,14 @@ ${modeGuide}
         }
       } catch (error) {
         try {
-          const blob = await renderQuotePngBlob();
+          const blob = await withTimeout(renderQuotePngBlob(), 45000, "PNG 이미지 생성 시간이 초과되었습니다.");
           downloadBlob(blob, `로엔매트_견적서_${dateText($("quoteDate").value) || "image"}.png`);
           setStatus("이미지 복사가 제한되어 PNG 파일로 저장했습니다.", 6000);
         } catch {
           setStatus("이미지 생성에 실패했습니다. 새로고침 후 다시 시도해 주세요.", 6000);
         }
       } finally {
-        $("copyImageBtn").disabled = false;
+        setButtonBusy(copyButton, false);
       }
     }
 
